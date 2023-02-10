@@ -1,11 +1,9 @@
-import React  from "react";
+import React from "react";
 
 function Phones() {
- 
   return (
-    <div >
+    <div>
       <h1>Phones</h1>
-     
     </div>
   );
 }

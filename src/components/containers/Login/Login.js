@@ -4,13 +4,10 @@ import bcrypt from "bcryptjs";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-;
-
   const validateForm = () => {
     return email.length > 0 && password.length > 0;
   };
@@ -32,7 +29,7 @@ function Login() {
       if (!response.ok) {
         throw new Error("Authentication failed");
       }
-   
+
       // Redirect the user to the homepage if authentication succeeds
     } catch (error) {
       setError(error.message);
@@ -42,8 +39,8 @@ function Login() {
   return (
     <div className="center-login">
       <form onSubmit={handleSubmit}>
-      <h1>Zepto Tracker</h1>
-        
+        <h1>Zepto Tracker</h1>
+
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">
             <i className="pi pi-user"></i>
@@ -53,7 +50,7 @@ function Login() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            />
+          />
         </div>
         <br />
         <div className="p-inputgroup">
@@ -65,10 +62,10 @@ function Login() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            />
+          />
         </div>
         <br />
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <Button label="Login" disabled={!validateForm()} />
       </form>
     </div>
