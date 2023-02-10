@@ -35,9 +35,9 @@ const searchKeywords = () => {
   return ( 
     <div>
       <div className="card">
-        <div>
+        <div className="number_topblock">
           <h3>Numbers</h3>
-          <div>
+          <div className="buynumber_button">
             <Button label="Primary" icon="pi pi-plus" className="p-button" />
           </div>
         </div>
