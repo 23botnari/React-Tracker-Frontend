@@ -1,5 +1,5 @@
 export const PhoneService = {
-  getProductsData() {
+  getPhonesData() {
     return [
       {
         id: "1",

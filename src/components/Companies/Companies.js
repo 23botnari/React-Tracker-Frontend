@@ -1,42 +1,42 @@
 import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "./ProductService";
+import { CompanyService } from "./CompanyService";
 import "./Companies.scss";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
+import { InputText } from 'primereact/inputtext';
+
 
 function Companies() {
   const [visibleRight, setVisibleRight] = useState(false);
-  const [companies, setCompanies] = useState([]);
+  const [value, setValue] = useState('');
 
   //useEffect(() => {
   //   ProductService.getProductsMini().then(data => setProducts(data));
   // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleEdit = (event, company) => {
-    setCompanies(company);
-    console.log("Edit button clicked for id: ${company.code}");
+  const actionButtons = () => {
+    return (
+      <React.Fragment>
+        <Button
+          icon="pi pi-pencil"
+          className="p-button-rounded p-button-info mr-2"
+          onClick={() => setVisibleRight(true)}
+        />
+      </React.Fragment>
+    );
   };
-const actionButtons =function () {
-  return(
-    <React.Fragment>
-       <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2"  />
-    </React.Fragment>
-  )
-}
   return (
     <div>
       <div className="card">
         <h3>Companies</h3>
-        <DataTable value={ProductService} responsiveLayout="scroll">
+        <DataTable value={CompanyService} responsiveLayout="scroll">
           <Column field="name" header="Name" />
           <Column field="isActive" header="Is active	" />
           <Column field="created" header="Created at	" />
           <Column field="updated" header="Updated at	" />
-          <Column body={actionButtons} header="actions">
-            <p>text</p>
-          </Column>
+          <Column body={actionButtons} header="Actions"></Column>
         </DataTable>
       </div>
       <div className="card flex justify-content-center">
@@ -45,20 +45,11 @@ const actionButtons =function () {
           position="right"
           onHide={() => setVisibleRight(false)}
           className="w-full md:w-20rem lg:w-30rem"
+          modal={null}
         >
-          <h2>Sidebar</h2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-          </p>
+          <h2>Update Company</h2>
+          <InputText value={value} onChange={(e) => setValue(e.target.value)} />
         </Sidebar>
-        <Button
-          icon="pi pi-pencil"
-          className="p-button-info"
-          onClick={() => setVisibleRight(true)}
-        />
       </div>
     </div>
   );

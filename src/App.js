@@ -5,7 +5,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
-import Companies from "./components/containers/Companies/Companies";
+import Companies from "./components/Companies/Companies";
 import Phones from "./components/Phones/Phones";
 import Sidebar from "./components/containers/Sidebar/Sidebar";
 
