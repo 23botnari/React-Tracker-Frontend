@@ -11,6 +11,7 @@ function Phones() {
   const [visibleRight, setVisibleRight] = useState(false);
   const [companies, setCompanies] = useState([]);
 
+<<<<<<< HEAD
   const actionButtons = () => {
     return (
       <React.Fragment>
@@ -33,6 +34,19 @@ function Phones() {
       </React.Fragment>
     );
   };
+=======
+
+  const actionButtons = () => {
+    return (
+      <React.Fragment>
+        <Button icon="pi pi-pencil" className="p-button-rounded p-button-info mr-2" />
+        <Button icon="pi pi-envelope" className="p-button-rounded p-button-warning mr-2" />
+        <Button icon="pi pi-send" className="p-button-rounded p-button-help mr-2" />
+        <Button icon="pi pi-trash" className="p-button-rounded p-button-danger mr-2" />
+      </React.Fragment>
+    )
+  }
+>>>>>>> e8d6dd503f78358b50d9a653f775f1304a0a8a58
   const searchKeywords = () => {
     return (
       <React.Fragment>
@@ -41,8 +55,13 @@ function Phones() {
           <InputText placeholder="Search keyword" />
         </span>
       </React.Fragment>
+<<<<<<< HEAD
     );
   };
+=======
+    )
+  }
+>>>>>>> e8d6dd503f78358b50d9a653f775f1304a0a8a58
   return (
     <div>
       <div className="PhoneHeader">
