@@ -30,7 +30,7 @@ function Companies() {
   return (
     <div>
       <div className="card">
-        <h3>SUGEPULA</h3>
+        <h3>Companies</h3>
         <DataTable value={CompanyService} responsiveLayout="scroll">
           <Column field="name" header="Name" />
           <Column field="isActive" header="Is active	" />

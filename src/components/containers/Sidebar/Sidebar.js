@@ -4,7 +4,7 @@ import Logo from "../../../assets/logo192.png";
 import { SidebarData } from "./SidebarData";
 import { Button } from "primereact/button";
 
-function Sidebar() {
+export const Sidebar = () => {
   return (
     <div className="Sidebar">
       <div
@@ -37,5 +37,4 @@ function Sidebar() {
       </ul>
     </div>
   );
-}
-export default Sidebar;
+};
