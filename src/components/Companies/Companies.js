@@ -30,7 +30,12 @@ function Companies() {
   return (
     <div>
       <div className="card">
-        <h3>Companies</h3>
+        <div className="card__text">
+          <h3>Companies</h3>
+          <div className="card__button">
+            <Button label="Buy a nuber" icon="pi pi-plus" className="p-button mr-2" />
+          </div>
+        </div>
         <DataTable value={CompanyService} responsiveLayout="scroll">
           <Column field="name" header="Name" />
           <Column field="isActive" header="Is active	" />
