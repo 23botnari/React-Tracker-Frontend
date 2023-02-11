@@ -7,32 +7,32 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from 'primereact/inputtext';
 
-function Phones(){
+function Phones() {
   const [visibleRight, setVisibleRight] = useState(false);
   const [companies, setCompanies] = useState([]);
 
 
-const actionButtons = () => {
-  return(
-    <React.Fragment>
-       <Button icon="pi pi-pencil" className="p-button-rounded p-button-info mr-2"  />
-       <Button icon="pi pi-envelope" className="p-button-rounded p-button-warning mr-2"  />
-       <Button icon="pi pi-send" className="p-button-rounded p-button-help mr-2"  />
-       <Button icon="pi pi-trash" className="p-button-rounded p-button-danger mr-2"  />
-    </React.Fragment>
-  )
-}
-const searchKeywords = () => {
-  return(
-  <React.Fragment>
-    <span className="p-input-icon-left">
-    <i className="pi pi-search" />
-    <InputText placeholder="Search keyword" />
-</span>
-  </React.Fragment>
-  )
-}
-  return ( 
+  const actionButtons = () => {
+    return (
+      <React.Fragment>
+        <Button icon="pi pi-pencil" className="p-button-rounded p-button-info mr-2" />
+        <Button icon="pi pi-envelope" className="p-button-rounded p-button-warning mr-2" />
+        <Button icon="pi pi-send" className="p-button-rounded p-button-help mr-2" />
+        <Button icon="pi pi-trash" className="p-button-rounded p-button-danger mr-2" />
+      </React.Fragment>
+    )
+  }
+  const searchKeywords = () => {
+    return (
+      <React.Fragment>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText placeholder="Search keyword" />
+        </span>
+      </React.Fragment>
+    )
+  }
+  return (
     <div>
       <div className="topnumber">
         <div className="topnumber__text">
