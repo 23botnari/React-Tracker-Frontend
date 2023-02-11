@@ -27,18 +27,19 @@ const searchKeywords = () => {
   <React.Fragment>
     <span className="p-input-icon-left">
     <i className="pi pi-search" />
-    <InputText placeholder="Search" />
+    <InputText placeholder="Search keyword" />
 </span>
   </React.Fragment>
   )
 }
   return ( 
     <div>
-      <div className="card">
-        <div className="number_topblock">
+      <div className="topnumber">
+        <div className="topnumber__text">
           <h3>Numbers</h3>
-          <div className="buynumber_button">
-            <Button label="Primary" icon="pi pi-plus" className="p-button" />
+          <div className="topnumber__button">
+            <Button label="Buy a nuber" icon="pi pi-plus" className="p-button mr-2" />
+            <Button icon="pi pi-replay" className="p-button-secondary p-button-rounded p-button-outlined mr-2" aria-label="Bookmark" />
           </div>
         </div>
         <DataTable value={PhoneService} responsiveLayout="scroll">

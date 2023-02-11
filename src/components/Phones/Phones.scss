@@ -1,1 +1,10 @@
-#......
+.topnumber{
+    &__text{
+    display: flex;
+    align-items: center;
+    }
+    &__button{
+        margin-left: auto;
+        margin-right: 3%;
+    }
+}
