@@ -1,4 +1,4 @@
-export const SidebarData = [
+export const SideMenuData = [
   {
     label: 'Dashboard',
     icon: 'pi pi-table',
