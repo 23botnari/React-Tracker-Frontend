@@ -1,25 +1,23 @@
 import React from "react";
-import "./Sidebar.scss";
+import "./SideMenu.scss";
 import Logo from "../../../assets/logo192.png";
-import { SidebarData } from "./SidebarData";
-import { Button } from "primereact/button";
+import { SideMenuData } from "./SideMenuData";
 
-export const Sidebar = () => {
+export const SideMenu = () => {
   return (
-    <div className="Sidebar">
+    <div className="SideMenu">
       <div
-        className="Sidebar__Brand"
+        className="SideMenu__Brand"
         onClick={() => {
           window.location.pathname = "/";
         }}
       >
         <img alt="Logo" src={Logo} width="55px" />
-
-        <div className="Sidebar__Title">Zepto Tracker</div>
+        <div className="SideMenu__Title">Zepto Tracker</div>
       </div>
 
-      <ul className="Sidebar__List">
-        {SidebarData.map((val, key) => {
+      <ul className="SideMenu__List">
+        {SideMenuData.map((val, key) => {
           return (
             <li
               key={key}
