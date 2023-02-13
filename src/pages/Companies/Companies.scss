@@ -1,4 +1,4 @@
-.card {
+.CompaniesHeader {
     &__text {
         display: flex;
         align-items: flex-end;
@@ -6,6 +6,6 @@
 
     &__button {
         margin-left: auto;
-        margin-right: 8%;
+        margin-right: 3%;
     }
 }

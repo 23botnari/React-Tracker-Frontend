@@ -1,0 +1,11 @@
+.PhoneHeader {
+  &__text {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  &__button {
+    margin-left: auto;
+    padding: 5px;
+  }
+}

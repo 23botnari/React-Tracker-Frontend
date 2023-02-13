@@ -6,17 +6,20 @@ function App() {
   return (
     <div className="basic-layout">
       <div className="basic_layout__sidebar">
-        <SideMenu />
+        <SideMenu></SideMenu>
       </div>
       <div
         className="basic_layout__content"
         style={{
           width: "100%",
           paddingLeft: (SideMenu?.offsetwidth ?? 0) + 280,
-          //  paddingLeft: (?.offsetwidth ?? 0) + 30,
+          //paddingRight: (SidePanel?.offsetwidth ?? 0) + 30,
         }}
       >
-        <AppRoutes />
+        <AppRoutes></AppRoutes>
+      </div>
+      <div className="basic_layout__SidePanel">
+        
       </div>
     </div>
   );
