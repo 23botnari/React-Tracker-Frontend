@@ -1,7 +1,7 @@
 import Login from "../../Login";
-import Dashboard from "../../Dashboard/Dashboard";
-import Companies from "../../Companies/Companies";
-import Phones from "../../Phones/Phones";
+import Dashboard from "../../../pages/Dashboard/Dashboard";
+import Companies from "../../../pages/Companies/Companies";
+import Phones from "../../../pages/Phones/Phones";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 export const AppRoutes = () => {

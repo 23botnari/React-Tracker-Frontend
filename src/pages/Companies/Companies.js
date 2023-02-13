@@ -5,12 +5,11 @@ import { CompanyService } from "./CompanyService";
 import "./Companies.scss";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
-import { InputText } from 'primereact/inputtext';
-
+import { InputText } from "primereact/inputtext";
 
 function Companies() {
   const [visibleRight, setVisibleRight] = useState(false);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
 
   //useEffect(() => {
   //   ProductService.getProductsMini().then(data => setProducts(data));
@@ -29,11 +28,15 @@ function Companies() {
   };
   return (
     <div>
-      <div className="card">
-        <div className="card__text">
+      <div className="CompaniesHeader">
+        <div className="CompaniesHeader__text">
           <h3>Companies</h3>
-          <div className="card__button">
-            <Button label="Buy a nuber" icon="pi pi-plus" className="p-button mr-2" />
+          <div className="CompaniesHeader__button">
+            <Button
+              label="Add Company"
+              icon="pi pi-plus"
+              className="p-button-info mr-2"
+            />
           </div>
         </div>
         <DataTable value={CompanyService} responsiveLayout="scroll">
