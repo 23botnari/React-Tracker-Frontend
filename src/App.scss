@@ -3,15 +3,28 @@
   background: #f9f9f9;
   height: 100%;
   min-height: 100vh;
-  &__sidebar{
+  &__sidebar {
     position: fixed;
   }
 }
-.basic_layout__sidebar{
+.basic_layout__sidemenu {
   position: fixed;
   z-index: 3;
 }
-.basic-layout__content{
+.basic-layout__content {
   padding: 30px;
   width: 100%;
+  z-index: 2;
+}
+.basic_layout__sidepanel {
+  
+  z-index: 2;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 0;
+  background: #fff;
+  &-active{
+    width: 500px;
+  }
 }
