@@ -3,9 +3,11 @@ import Dashboard from "../../../pages/Dashboard/Dashboard";
 import Companies from "../../../pages/Companies/Companies";
 import Phones from "../../../pages/Phones/Phones";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { lazy } from "react";
 
 export const AppRoutes = () => {
   return (
+   
     <BrowserRouter>
       <Routes>
         <Route index path="/auth/login" element={<Login />} />
@@ -14,5 +16,6 @@ export const AppRoutes = () => {
         <Route path="/phones" element={<Phones />} />
       </Routes>
     </BrowserRouter>
+ 
   );
 };
