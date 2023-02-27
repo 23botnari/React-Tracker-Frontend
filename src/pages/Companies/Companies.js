@@ -5,13 +5,11 @@ import { CompaniesService } from "./CompaniesService";
 import "./Companies.scss";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import SidePanel from "../../components/containers/SidePanel/SidePanel";
-import SidePanelTemplate from "../../components/containers/SidePanel/SidePanelTemplate";
+import CustomDialog from "./../../components/containers/SidePanel/Dialog"
 function Companies() {
   const [companies, setCompanies] = useState("");
   const [companiesName, setCompaniesName] = useState("");
-  const [isPanelOpen, setPanelOpen] = useState(false);
-  const onClose = () => setPanelOpen(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     CompaniesService.getCompanies().then((data) => setCompanies(data));
@@ -25,16 +23,16 @@ function Companies() {
       ></i>
     );
   };
-  const editButton =() =>{
-  }
+  const [isModalOpen, setModalOpen] = useState(false);
+  const onClose = () => setModalOpen(false);
   const actionButtons = () => {
     return (
       <React.Fragment>
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-info mr-2"
-          onClick={() => setPanelOpen(!isPanelOpen)}
-        ></Button>
+          onClick={() => setModalOpen(!isModalOpen)}>
+        </Button>
       </React.Fragment>
     );
   };
@@ -50,39 +48,37 @@ function Companies() {
   };
 
   return (
-    <div className="CompaniesContent">
-      <div className="CompaniesTable">
-        <div className="CompaniesTableHeader">
-          <div className="CompaniesTableHeader__text">
-            <h3>Companies</h3>
-            <div className="CompaniesTableHeader__button">
-              <Button
-                label="Add Company"
-                icon="pi pi-plus"
-                className="p-button-info mr-2"
-                onClick={handleAddElement}
-              />
-              <InputText
-                id="name"
-                value={companies.name}
-                onChange={handleElementNameChange}
-              />
-            </div>
+    <div>
+      <div className="CompaniesHeader">
+        <div className="CompaniesHeader__text">
+          <h3>Companies</h3>
+          <div className="CompaniesHeader__button">
+            <Button
+              label="Add Company"
+              icon="pi pi-plus"
+              className="p-button-info mr-2"
+              onClick={handleAddElement}
+            />
+            <InputText
+              id="name"
+              value={companies.name}
+              onChange={handleElementNameChange}
+            />
           </div>
-          <DataTable value={companies} responsiveLayout="scroll">
-            <Column field="name" header="Name" />
-            <Column body={statusCircle} dataType="boolean" header="Is active	" />
-            <Column field="created" header="Created at	" />
-            <Column field="updatedAt" header="Updated at	" />
-            <Column body={actionButtons} header="Actions"></Column>
-          </DataTable>
         </div>
+        <DataTable value={companies} responsiveLayout="scroll">
+          <Column field="name" header="Name" />
+          <Column body={statusCircle} dataType="boolean" header="Is active	" />
+          <Column field="created" header="Created at	" />
+          <Column field="updatedAt" header="Updated at	" />
+          <Column body={actionButtons} header="Actions"></Column>
+        </DataTable>
       </div>
-      <div className="sidepanela">
-        {isPanelOpen && (
-          <SidePanelTemplate status="__active" title="si ti doare" />
-        )}
-      </div>
+      {isModalOpen && (
+        <CustomDialog
+          onClose={onClose}
+        />
+      )}
     </div>
   );
 }
