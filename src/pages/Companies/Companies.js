@@ -5,12 +5,14 @@ import { CompaniesService } from "./CompaniesService";
 import "./Companies.scss";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import SidePanel from "../../components/containers/SidePanel/SidePanel";
+import { Checkbox } from "primereact/checkbox";
+
 import SidePanelTemplate from "../../components/containers/SidePanel/SidePanelTemplate";
 function Companies() {
   const [companies, setCompanies] = useState("");
   const [companiesName, setCompaniesName] = useState("");
   const [isPanelOpen, setPanelOpen] = useState(false);
+  const [companiesIsActive, setCompanieIsActive] = useState();
   const onClose = () => setPanelOpen(false);
 
   useEffect(() => {
@@ -25,8 +27,7 @@ function Companies() {
       ></i>
     );
   };
-  const editButton =() =>{
-  }
+  const editButton = () => {};
   const actionButtons = () => {
     return (
       <React.Fragment>
@@ -42,7 +43,13 @@ function Companies() {
   const handleAddElement = () => {
     setCompanies([
       ...companies,
-      { id: companies.length + 1, name: companiesName },
+      {
+        id: companies.length + 1,
+        name: companiesName,
+        isActive: companiesIsActive,
+        createdAt: new Date().toLocaleDateString("en-GB"),
+        updatedAt: new Date().toLocaleDateString("en-GB"),
+      },
     ]);
   };
   const handleElementNameChange = (event) => {
@@ -67,12 +74,16 @@ function Companies() {
                 value={companies.name}
                 onChange={handleElementNameChange}
               />
+              <Checkbox
+                checked={companiesIsActive}
+                onChange={(e) => setCompanieIsActive(e.checked)}
+              ></Checkbox>
             </div>
           </div>
           <DataTable value={companies} responsiveLayout="scroll">
             <Column field="name" header="Name" />
             <Column body={statusCircle} dataType="boolean" header="Is active	" />
-            <Column field="created" header="Created at	" />
+            <Column field="createdAt" header="Created at	" dataType="date" />
             <Column field="updatedAt" header="Updated at	" />
             <Column body={actionButtons} header="Actions"></Column>
           </DataTable>
