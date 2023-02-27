@@ -5,13 +5,13 @@ export const CompaniesService = {
       {
         name: "Zepto",
         isActive: true,
-        createdAt: new Date(),
+        createdAt: "02-01-2023",
         updatedAt: "13-12-2022",
       },
       {
         name: "Ford",
         isActive: false,
-        createdAt: new Date(),
+        createdAt: "02-01-2023",
         updatedAt: "02-01-2023",
       },
     ];
