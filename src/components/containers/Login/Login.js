@@ -3,8 +3,9 @@ import "./Login.css";
 import bcrypt from "bcryptjs";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { useAppContext } from "../../../lib/contextLib";
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,8 +30,7 @@ function Login() {
       if (!response.ok) {
         throw new Error("Authentication failed");
       }
-
-      // Redirect the user to the homepage if authentication succeeds
+      userHasAuthenticated(true);
     } catch (error) {
       setError(error.message);
     }
@@ -70,6 +70,4 @@ function Login() {
       </form>
     </div>
   );
-}
-
-export default Login;
+};

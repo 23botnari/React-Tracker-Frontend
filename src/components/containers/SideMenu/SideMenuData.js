@@ -27,7 +27,7 @@ export const SideMenuData = [
   {
     label: "Log Out",
     icon: "pi pi-sign-out",
-    link: "/auth/login",
+    link: "",
   },
 
 ];

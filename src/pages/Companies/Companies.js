@@ -6,7 +6,6 @@ import "./Companies.scss";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
-
 import SidePanelTemplate from "../../components/containers/SidePanel/SidePanelTemplate";
 function Companies() {
   const [companies, setCompanies] = useState("");
@@ -74,10 +73,14 @@ function Companies() {
                 value={companies.name}
                 onChange={handleElementNameChange}
               />
+              <label htmlFor="active" className="ml-2">
+                Active:
+              </label>
               <Checkbox
+                inputId="active"
                 checked={companiesIsActive}
                 onChange={(e) => setCompanieIsActive(e.checked)}
-              ></Checkbox>
+              />
             </div>
           </div>
           <DataTable value={companies} responsiveLayout="scroll">
@@ -91,7 +94,7 @@ function Companies() {
       </div>
       <div className="sidepanela">
         {isPanelOpen && (
-          <SidePanelTemplate status="__active" title="si ti doare" />
+          <SidePanelTemplate  title="si ti doare" content="help"/>
         )}
       </div>
     </div>
