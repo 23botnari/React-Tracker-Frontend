@@ -18,7 +18,11 @@
 }
 .basic_layout__sidepanel {
   
+  z-index: 2;
+  top: 0;
+  right: 0;
   height: 100%;
+  width: 0;
   background: #fff;
   &-active{
     width: 500px;
