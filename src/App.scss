@@ -1,26 +1,52 @@
+// Pages
+@import "../src/pages/Companies/Companies.scss";
+
+// Main Styles
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 .basic-layout {
   display: flex;
   background: #f9f9f9;
   height: 100%;
   min-height: 100vh;
+
   &__sidebar {
     position: fixed;
   }
 }
+
+.basic_layout__content {
+  transition: all 0.5s ease;
+}
+
 .basic_layout__sidemenu {
   position: fixed;
   z-index: 3;
 }
+
 .basic-layout__content {
   padding: 30px;
   width: 100%;
   z-index: 2;
 }
+
 .basic_layout__sidepanel {
-  
   height: 100%;
   background: #fff;
-  &-active{
+
+  &-active {
     width: 500px;
   }
 }

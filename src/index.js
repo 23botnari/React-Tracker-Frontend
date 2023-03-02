@@ -1,8 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+
+import { store } from "./redux/store";
+import { Provider } from "react-redux";
+
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+import App from "./App";
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
