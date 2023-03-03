@@ -73,6 +73,14 @@ const Companies = () => {
                   dispatch(setPanelType("Companies"));
                 }}
               />
+              <label htmlFor="active" className="ml-2">
+                Active:
+              </label>
+              <Checkbox
+                inputId="active"
+                checked={companiesIsActive}
+                onChange={(e) => setCompanieIsActive(e.checked)}
+              />
             </div>
           </div>
           <DataTable value={companies} responsiveLayout="scroll">
