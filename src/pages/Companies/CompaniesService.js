@@ -20,3 +20,4 @@ export const CompaniesService = {
     return Promise.resolve(this.getCompaniesData());
   },
 };
+

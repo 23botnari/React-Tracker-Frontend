@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setIsOpen,
+  setPanelType,
+} from "../../redux/actions/sidePanelActions.js";
+import { setPhones } from "../../redux/actions/phonesActions.js";
+
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { PhoneService } from "./PhonesData.js";
-import "./Phones.scss";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 
+import "./Phones.scss";
+
 function Phones() {
   const [visibleRight, setVisibleRight] = useState(false);
-  const [companies, setCompanies] = useState([]);
+  const { phones } = useSelector((state) => state.PhonesReducer);
+
+  const dispatch = useDispatch();
+
+  const getPhones = async () => {
+    fetch("https://mockend.com/23botnari/teza/phones")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        dispatch(setPhones(data));
+      });
+  };
+
+  useEffect(() => {
+    getPhones();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const actionButtons = () => {
     return (
@@ -33,6 +58,7 @@ function Phones() {
       </React.Fragment>
     );
   };
+
   const searchKeywords = () => {
     return (
       <React.Fragment>
@@ -43,6 +69,7 @@ function Phones() {
       </React.Fragment>
     );
   };
+
   return (
     <div>
       <div className="PhoneHeader">
@@ -53,6 +80,10 @@ function Phones() {
               label="Buy a number"
               icon="pi pi-plus"
               className="p-button-info mr-2"
+              onClick={() => {
+                dispatch(setIsOpen(true));
+                dispatch(setPanelType("Phones"));
+              }}
             />
             <Button
               icon="pi pi-replay"
@@ -62,13 +93,13 @@ function Phones() {
           </div>
         </div>
       </div>
-      <DataTable value={PhoneService} responsiveLayout="scroll">
-        <Column field="phone" header="Phone" style={{ width: "200px" }} />
+      <DataTable value={phones} responsiveLayout="scroll">
+        <Column field="phoneNumber" header="Phone" style={{ width: "200px" }} />
         <Column field="company" header="Company	" />
-        <Column field="driver" header="Driver name	" />
-        <Column field="truck" header="Truck number	" />
-        <Column field="trailer" header="Trailer number" />
-        <Column field="mpmobile" header="MP mobile user id	" />
+        <Column field="driverName" header="Driver name	" />
+        <Column field="truckNumber" header="Truck number	" />
+        <Column field="trailerNumber" header="Trailer number" />
+        <Column field="mpMobileUserId" header="MP mobile user id	" />
         <Column body={actionButtons} header={searchKeywords}>
           <p>text</p>
         </Column>
