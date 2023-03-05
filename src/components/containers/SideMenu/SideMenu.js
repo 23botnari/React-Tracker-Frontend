@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
 import "./SideMenu.scss";
 import Logo from "../../../assets/logo192.png";
 import { SideMenuData } from "./SideMenuData";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { setIsExpanded } from "../../../redux/actions/sideMenuActions";
 
-const SideMenu = ({ toggleExpanded }) => {
+const SideMenu = () => {
+  const { isExpanded } = useSelector((state) => state.SideMenuReducer);
   const dispatch = useDispatch();
 
   return (
     <>
-      <div className={`SideMenu ${!!toggleExpanded ? "expanded" : ""}`}>
+      <div className={`SideMenu ${!!isExpanded ? "expanded" : ""}`}>
         <div
           className="SideMenu__Brand"
           onClick={() => {
@@ -36,7 +36,7 @@ const SideMenu = ({ toggleExpanded }) => {
                 }}
               >
                 <i id="icon" className={val.icon}></i>
-                {!!toggleExpanded ? <span id="label">{val.label}</span> : ""}
+                {!!isExpanded ? <span id="label">{val.label}</span> : ""}
               </li>
             );
           })}
@@ -44,11 +44,11 @@ const SideMenu = ({ toggleExpanded }) => {
         <div
           className="SideMenu__button"
           onClick={() => {
-            dispatch(setIsExpanded(!toggleExpanded));
+            dispatch(setIsExpanded(!isExpanded));
           }}
         >
           <i
-            className={`pi pi-chevron${!!toggleExpanded ? "-left" : "-right"}`}
+            className={`pi pi-chevron${!!isExpanded ? "-left" : "-right"}`}
           ></i>
         </div>
       </div>
