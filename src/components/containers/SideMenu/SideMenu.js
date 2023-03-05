@@ -10,7 +10,7 @@ import { setIsExpanded } from "../../../redux/actions/sideMenuActions";
 
 const SideMenu = ({ toggleExpanded }) => {
   const dispatch = useDispatch();
-const [show, setshow] = useState(true);
+
   return (
     <>
       <div className={`SideMenu ${!!toggleExpanded ? "expanded" : ""}`}>
@@ -48,7 +48,7 @@ const [show, setshow] = useState(true);
           }}
         >
           <i
-            className={`pi pi-chevron-${!!toggleExpanded ? "left" : "right"}`}
+            className={`pi pi-chevron${!!toggleExpanded ? "-left" : "-right"}`}
           ></i>
         </div>
       </div>
