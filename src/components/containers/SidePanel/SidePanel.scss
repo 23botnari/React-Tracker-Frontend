@@ -28,7 +28,7 @@
 //     margin-top: 20px;
 //   }
 // }
-.sidepanela {
+.Panel {
   display: block;
   position: fixed;
   top: 0;
@@ -66,5 +66,22 @@
     position: absolute;
     bottom: 0;
     width: 100%;
+  }
+}
+.Message {
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 25px;
+  margin-top: 25px;
+  padding: 10px;
+  position: relative;
+  box-shadow: #0000004d 0 1px 4px -1px;
+  &-details{
+    font-size: 12px;
+    border-bottom: 1px solid #05010175;
+    padding-bottom: 1vh;
+  }
+  &-text {
+    color:#050101;
   }
 }

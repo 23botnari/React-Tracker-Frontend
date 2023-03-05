@@ -3,6 +3,7 @@ import { ActionTypes } from "../constants/action-types";
 const initialState = {
   isOpen: false,
   panelType: "",
+  panelTitle: "",
 };
 
 export const SidePanelReducer = (state = initialState, action) => {
@@ -11,6 +12,8 @@ export const SidePanelReducer = (state = initialState, action) => {
       return { ...state, isOpen: action.isOpen };
     case ActionTypes.SET_PANEL_TYPE:
       return { ...state, panelType: action.panelType };
+    case ActionTypes.SET_PANEL_TITLE:
+      return { ...state, panelTitle: action.panelTitle };
     default:
       return state;
   }

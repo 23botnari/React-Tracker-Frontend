@@ -13,3 +13,9 @@ export const setPanelType = (panelType) => {
     panelType,
   };
 };
+export const setPanelTitle = (panelTitle) => {
+  return {
+    type: ActionTypes.SET_PANEL_TITLE,
+    panelTitle,
+  };
+};

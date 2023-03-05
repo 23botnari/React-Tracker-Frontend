@@ -2,31 +2,39 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 
-import { SideMenu } from "./components/containers/SideMenu/SideMenu";
-import { AppRoutes } from "./components/containers/AppRoutes/AppRoutes.js";
+import SideMenu from "./components/containers/SideMenu/SideMenu";
+import AppRoutes from "./components/containers/AppRoutes/AppRoutes.js";
 import SidePanelTemplate from "./components/containers/SidePanel/SidePanelTemplate";
 
 import "./App.scss";
 
 const App = () => {
-  const { isOpen, panelType } = useSelector((state) => state.SidePanelReducer);
+  const { isOpen, panelType, panelTitle } = useSelector(
+    (state) => state.SidePanelReducer
+  );
+
+  const { isExpanded } = useSelector((state) => state.SideMenuReducer);
 
   return (
     <div className="basic-layout">
       <div className="basic_layout__sidemenu">
-        <SideMenu />
+        <SideMenu toggleExpanded={isExpanded} />
       </div>
       <div
         className="basic_layout__content"
         style={{
           width: "100%",
-          paddingLeft: `${280}px`,
+          paddingLeft: !!isExpanded ? `${280}px` : `${115}px`,
           paddingRight: !!isOpen ? `${400}px` : 0,
         }}
       >
         <AppRoutes />
       </div>
-      <SidePanelTemplate isActive={isOpen} panelType={panelType} />
+      <SidePanelTemplate
+        isActive={isOpen}
+        panelType={panelType}
+        panelTitle={panelTitle}
+      />
     </div>
   );
 };

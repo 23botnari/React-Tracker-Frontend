@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setIsOpen,
+  setPanelTitle,
   setPanelType,
 } from "../../redux/actions/sidePanelActions.js";
 import { setPhones } from "../../redux/actions/phonesActions.js";
@@ -33,7 +34,6 @@ function Phones() {
 
   useEffect(() => {
     getPhones();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const actionButtons = () => {
@@ -42,14 +42,29 @@ function Phones() {
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-info mr-2"
+          onClick={() => {
+            dispatch(setIsOpen(true));
+            dispatch(setPanelType("Phones"));
+            dispatch(setPanelTitle("Update Number"));
+          }}
         />
         <Button
           icon="pi pi-envelope"
           className="p-button-rounded p-button-warning mr-2"
+          onClick={() => {
+            dispatch(setIsOpen(true));
+            dispatch(setPanelType("ReadMessages"));
+            dispatch(setPanelTitle("Messages - "));
+          }}
         />
         <Button
           icon="pi pi-send"
           className="p-button-rounded p-button-help mr-2"
+          onClick={() => {
+            dispatch(setIsOpen(true));
+            dispatch(setPanelType("SendMessages"));
+            dispatch(setPanelTitle("Send Message -"));
+          }}
         />
         <Button
           icon="pi pi-trash"
@@ -83,6 +98,7 @@ function Phones() {
               onClick={() => {
                 dispatch(setIsOpen(true));
                 dispatch(setPanelType("Phones"));
+                dispatch(setPanelTitle("New Number"));
               }}
             />
             <Button

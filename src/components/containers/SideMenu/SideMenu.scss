@@ -2,12 +2,14 @@
   background-color: #fff;
   color: #333;
   position: relative;
-  width: 250px;
+  width: 90px;
   min-height: 100vh;
   padding: 0;
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.5);
   border-right: 1px solid #d1cbcb;
-
+  &.expanded{
+    width: 250px;
+  }
   &__Brand {
     text-align: center;
     padding: 20px 0 20px;
@@ -58,6 +60,23 @@
     bottom: 0;
     border-top:2px solid #ddd;
   }
+  &__button {
+    width: 33px;
+    height: 33px;
+    background-color: #1d4ed8;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -16.5px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: .25s all;
+  }
+
   .row #icon {
     flex: 30%;
     display: grid;

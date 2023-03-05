@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setIsOpen, setPanelType } from "../../redux/actions/sidePanelActions";
+import {
+  setIsOpen,
+  setPanelTitle,
+  setPanelType,
+} from "../../redux/actions/sidePanelActions";
 import { setCompanies } from "../../redux/actions/companiesActions";
 
 import { DataTable } from "primereact/datatable";
@@ -32,7 +36,6 @@ const Companies = () => {
 
   useEffect(() => {
     getCompanies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const statusCircle = (rowData) => {
@@ -52,6 +55,7 @@ const Companies = () => {
         onClick={() => {
           dispatch(setIsOpen(true));
           dispatch(setPanelType("Companies"));
+          dispatch(setPanelTitle("Edit Company"));
         }}
       ></Button>
     );
@@ -71,15 +75,8 @@ const Companies = () => {
                 onClick={() => {
                   dispatch(setIsOpen(true));
                   dispatch(setPanelType("Companies"));
+                  dispatch(setPanelTitle("New Company"));
                 }}
-              />
-              <label htmlFor="active" className="ml-2">
-                Active:
-              </label>
-              <Checkbox
-                inputId="active"
-                checked={companiesIsActive}
-                onChange={(e) => setCompanieIsActive(e.checked)}
               />
             </div>
           </div>

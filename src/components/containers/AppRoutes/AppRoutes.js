@@ -4,7 +4,7 @@ import Companies from "../../../pages/Companies/Companies";
 import Phones from "../../../pages/Phones/Phones";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-export const AppRoutes = () => {
+ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -16,3 +16,4 @@ export const AppRoutes = () => {
     </BrowserRouter>
   );
 };
+export default AppRoutes;
