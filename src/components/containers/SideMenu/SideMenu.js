@@ -4,6 +4,11 @@ import "./SideMenu.scss";
 import Logo from "../../../assets/logo192.png";
 import { SideMenuData } from "./SideMenuData";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  setIsOpen,
+  setPanelTitle,
+  setPanelType,
+} from "../../../redux/actions/sidePanelActions";
 
 import { setIsExpanded } from "../../../redux/actions/sideMenuActions";
 
@@ -33,6 +38,9 @@ const SideMenu = () => {
                 id={window.location.pathname === val.link ? "active" : ""}
                 onClick={() => {
                   window.location.pathname = val.link;
+                  dispatch(setIsOpen(true));
+                  dispatch(setPanelType("AddTrip"));
+                  dispatch(setPanelTitle("Add Trip"));
                 }}
               >
                 <i id="icon" className={val.icon}></i>

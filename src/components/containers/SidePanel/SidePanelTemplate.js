@@ -29,7 +29,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
   const Content = () => {
     switch (panelType) {
       case "Phones":
-         return (
+        return (
           <>
             <InputText
               id="phoneNumber"
@@ -106,9 +106,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
           <>
             <div className="Message">
               <div className="Message-details">
-                <span style={{color:"gray"}}>
-                  From:
-                  </span>
+                <span style={{ color: "gray" }}>From:</span>
               </div>
               <div className="Message-text">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -132,6 +130,53 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
               id="message"
               type="text"
               placeholder="Message"
+              className="w-full mb-3"
+            />
+          </>
+        );
+      case "AddTrip":
+        return (
+          <>
+            <InputText
+              id="phoneNumber"
+              type="text"
+              placeholder="Phone"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="company"
+              type="text"
+              placeholder="Company"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="driverName"
+              type="text"
+              placeholder="Driver name"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="truckNumber"
+              type="text"
+              placeholder="Truck number"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="trailerNumber"
+              type="text"
+              placeholder="Trailer number"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="mpMobileUserId"
+              type="text"
+              placeholder="MP mobile user id"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="email"
+              type="text"
+              placeholder="Email address"
               className="w-full mb-3"
             />
           </>
