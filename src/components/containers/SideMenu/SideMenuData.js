@@ -13,7 +13,6 @@ export  const SideMenuData = [
     {
       label: "Add Trip",
       icon: "pi pi-plus-circle",
-      link: "/",
     },
     {
       label: "Phones",

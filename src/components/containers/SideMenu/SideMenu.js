@@ -37,7 +37,9 @@ const SideMenu = () => {
                 className="row"
                 id={window.location.pathname === val.link ? "active" : ""}
                 onClick={() => {
-                  window.location.pathname = val.link;
+                  if (!!val.link) {
+                    window.location.pathname = val.link;
+                  }
                   dispatch(setIsOpen(true));
                   dispatch(setPanelType("AddTrip"));
                   dispatch(setPanelTitle("Add Trip"));
