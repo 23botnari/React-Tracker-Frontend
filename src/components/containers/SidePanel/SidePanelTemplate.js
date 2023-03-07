@@ -24,10 +24,8 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle, props }) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
       method: "POST",
       body: JSON.stringify(data),
-    })
+    });
   };
-
-  
 
   const Content = () => {
     switch (panelType) {
