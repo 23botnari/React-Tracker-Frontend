@@ -18,7 +18,7 @@ const App = () => {
   return (
     <div className="basic-layout">
       <div className="basic_layout__sidemenu">
-        <SideMenu toggleExpanded={isExpanded} />
+        <SideMenu />
       </div>
       <div
         className="basic_layout__content"
