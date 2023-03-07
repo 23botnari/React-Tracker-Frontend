@@ -10,10 +10,9 @@ import { setPhones } from "../../redux/actions/phonesActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode } from "primereact/api";
 
 import "./Phones.scss";
 
