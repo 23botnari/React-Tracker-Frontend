@@ -21,7 +21,7 @@ const SideMenu = ({ toggleExpanded }) => {
           }}
         >
           <img alt="Logo" src={Logo} width="55px" />
-          <div className="SideMenu__Title">Zepto Tracker</div>
+          <div className="SideMenu__Title">React Tracker</div>
         </div>
 
         <ul className="SideMenu__List">

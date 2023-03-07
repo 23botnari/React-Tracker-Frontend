@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -9,7 +9,7 @@ import { setIsOpen } from "../../../redux/actions/sidePanelActions";
 
 import "./SidePanel.scss";
 
-const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
+const SidePanelTemplate = ({ isActive, panelType, panelTitle, props }) => {
   const [checked, setChecked] = useState(false);
   const [values, setValues] = useState({
     name: "",
@@ -24,12 +24,15 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
       method: "POST",
       body: JSON.stringify(data),
-    });
+    })
   };
+
+  
+
   const Content = () => {
     switch (panelType) {
       case "Phones":
-         return (
+        return (
           <>
             <InputText
               id="phoneNumber"
@@ -84,7 +87,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
               type="text"
               placeholder="Company"
               className="w-full mb-3"
-              value={values.name}
+              value={values.name || ""}
               onChange={(e) => {
                 setValues((prev) => ({ ...prev, name: e.target.value }));
               }}
@@ -95,6 +98,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
                 id="checkIsActive"
                 onChange={(e) => setChecked(e.checked)}
                 checked={checked}
+                value={values.isActive}
                 className="mr-2"
               />
               <label htmlFor="checkIsActive">Is Active</label>
@@ -106,9 +110,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
           <>
             <div className="Message">
               <div className="Message-details">
-                <span style={{color:"gray"}}>
-                  From:
-                  </span>
+                <span style={{ color: "gray" }}>From:</span>
               </div>
               <div className="Message-text">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
