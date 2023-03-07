@@ -4,12 +4,12 @@ import Companies from "../../../pages/Companies/Companies";
 import Phones from "../../../pages/Phones/Phones";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
- const AppRoutes = () => {
+const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index path="/auth/login" element={<Login />} />
-        <Route path="/" element={<Dashboard />} />
+        <Route index path="/" element={<Dashboard />} />
+        <Route path="/auth/login" element={<Login />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/phones" element={<Phones />} />
       </Routes>

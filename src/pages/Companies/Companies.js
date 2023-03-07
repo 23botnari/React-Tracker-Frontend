@@ -80,7 +80,12 @@ const Companies = () => {
               />
             </div>
           </div>
-          <DataTable value={companies} responsiveLayout="scroll">
+          <DataTable
+            value={companies}
+            responsiveLayout="scroll"
+            rows={10}
+            paginator
+          >
             <Column field="name" header="Name" />
             <Column body={statusCircle} dataType="boolean" header="Is active	" />
             <Column field="createdAt" header="Created at	" />

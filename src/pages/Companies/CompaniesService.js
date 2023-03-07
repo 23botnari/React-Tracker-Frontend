@@ -3,7 +3,7 @@ export const CompaniesService = {
   getCompaniesData() {
     return [
       {
-        name: "Zepto",
+        name: "React",
         isActive: true,
         createdAt: "02-01-2023",
         updatedAt: "13-12-2022",

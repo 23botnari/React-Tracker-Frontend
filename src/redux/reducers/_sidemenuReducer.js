@@ -1,7 +1,7 @@
 import { ActionTypes } from "../constants/action-types";
 
 const initialState = {
-  isExpanded: false,
+  isExpanded: true,
 };
 
 export const SideMenuReducer = (state = initialState, action) => {

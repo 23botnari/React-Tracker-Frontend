@@ -10,17 +10,19 @@ import { setPhones } from "../../redux/actions/phonesActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { FilterMatchMode } from "primereact/api";
 
 import "./Phones.scss";
 
 function Phones() {
-  const [visibleRight, setVisibleRight] = useState(false);
   const { phones } = useSelector((state) => state.PhonesReducer);
-
   const dispatch = useDispatch();
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
 
   const getPhones = async () => {
     fetch("https://mockend.com/23botnari/teza/phones")
@@ -29,6 +31,9 @@ function Phones() {
       })
       .then((data) => {
         dispatch(setPhones(data));
+        return [...Button(data || [])].map((d) => {
+          return d;
+        });
       });
   };
 
@@ -36,9 +41,19 @@ function Phones() {
     getPhones();
   }, []);
 
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
+
   const actionButtons = () => {
     return (
-      <React.Fragment>
+      <>
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-info mr-2"
@@ -70,18 +85,26 @@ function Phones() {
           icon="pi pi-trash"
           className="p-button-rounded p-button-danger mr-2"
         />
-      </React.Fragment>
+      </>
     );
+  };
+
+  const refreshPage = () => {
+    window.location.reload(false);
   };
 
   const searchKeywords = () => {
     return (
-      <React.Fragment>
+      <>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
-          <InputText placeholder="Search keyword" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Search keyword"
+          />
         </span>
-      </React.Fragment>
+      </>
     );
   };
 
@@ -105,37 +128,36 @@ function Phones() {
               icon="pi pi-replay"
               className="p-button-secondary p-button-rounded p-button-outlined mr-2"
               aria-label="Bookmark"
+              onClick={refreshPage}
             />
           </div>
         </div>
       </div>
-      <DataTable value={phones} responsiveLayout="scroll">
+      <DataTable
+        value={phones}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        paginator
+        rows={10}
+        responsiveLayout="scroll"
+        dataKey="id"
+        filters={filters}
+        globalFilterFields={[
+          "phoneNumber",
+          "company",
+          "driverName",
+          "truckNumber",
+          "trailerNumber",
+          "mpMobileUserId",
+        ]}
+      >
         <Column field="phoneNumber" header="Phone" style={{ width: "200px" }} />
         <Column field="company" header="Company	" />
         <Column field="driverName" header="Driver name	" />
         <Column field="truckNumber" header="Truck number	" />
         <Column field="trailerNumber" header="Trailer number" />
         <Column field="mpMobileUserId" header="MP mobile user id	" />
-        <Column body={actionButtons} header={searchKeywords}>
-          <p>text</p>
-        </Column>
+        <Column body={actionButtons} header={searchKeywords}></Column>
       </DataTable>
-      <div className="card flex justify-content-center">
-        <Sidebar
-          visible={visibleRight}
-          position="right"
-          onHide={() => setVisibleRight(false)}
-          className="w-full md:w-20rem lg:w-30rem"
-        >
-          <h2>Sidebar</h2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-          </p>
-        </Sidebar>
-      </div>
     </div>
   );
 }

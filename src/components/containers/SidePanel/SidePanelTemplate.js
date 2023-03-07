@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -9,7 +9,7 @@ import { setIsOpen } from "../../../redux/actions/sidePanelActions";
 
 import "./SidePanel.scss";
 
-const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
+const SidePanelTemplate = ({ isActive, panelType, panelTitle, props }) => {
   const [checked, setChecked] = useState(false);
   const [values, setValues] = useState({
     name: "",
@@ -26,6 +26,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
       body: JSON.stringify(data),
     });
   };
+
   const Content = () => {
     switch (panelType) {
       case "Phones":
@@ -84,7 +85,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
               type="text"
               placeholder="Company"
               className="w-full mb-3"
-              value={values.name}
+              value={values.name || ""}
               onChange={(e) => {
                 setValues((prev) => ({ ...prev, name: e.target.value }));
               }}
@@ -95,6 +96,7 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle }) => {
                 id="checkIsActive"
                 onChange={(e) => setChecked(e.checked)}
                 checked={checked}
+                value={values.isActive}
                 className="mr-2"
               />
               <label htmlFor="checkIsActive">Is Active</label>

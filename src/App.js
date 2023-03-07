@@ -25,7 +25,7 @@ const App = () => {
         style={{
           width: "100%",
           paddingLeft: !!isExpanded ? `${280}px` : `${115}px`,
-          paddingRight: !!isOpen ? `${400}px` : 0,
+          paddingRight: !!isOpen ? `${400}px` : `${20}px`,
         }}
       >
         <AppRoutes />

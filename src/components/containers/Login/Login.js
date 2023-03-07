@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <div className="center-login">
       <form onSubmit={handleSubmit}>
-        <h1>Zepto Tracker</h1>
+        <h1>React Tracker</h1>
 
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">
