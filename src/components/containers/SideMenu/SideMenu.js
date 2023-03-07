@@ -40,9 +40,22 @@ const SideMenu = () => {
                   if (!!val.link) {
                     window.location.pathname = val.link;
                   }
-                  dispatch(setIsOpen(true));
-                  dispatch(setPanelType("AddTrip"));
-                  dispatch(setPanelTitle("Add Trip"));
+
+                  switch (val.label) {
+                    case "Add Trip":
+                      dispatch(setIsOpen(true));
+                      dispatch(setPanelType("AddTrip"));
+                      dispatch(setPanelTitle("Add Trip"));
+                      break;
+                    case "Trips":
+                      dispatch(setIsOpen(true));
+                      dispatch(setPanelType("Trips"));
+                      dispatch(setPanelTitle("Trips"));
+                      break;
+
+                    default:
+                      break;
+                  }
                 }}
               >
                 <i id="icon" className={val.icon}></i>

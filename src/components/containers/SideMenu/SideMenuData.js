@@ -8,7 +8,6 @@ export  const SideMenuData = [
     {
       label: "Trips",
       icon: "pi pi-directions",
-      link: "/",
     },
     {
       label: "Add Trip",

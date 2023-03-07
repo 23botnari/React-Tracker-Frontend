@@ -183,6 +183,54 @@ const SidePanelTemplate = ({ isActive, panelType, panelTitle, props }) => {
             />
           </>
         );
+
+      case "Trips":
+        return (
+          <>
+            <InputText
+              id="phoneNumber"
+              type="text"
+              placeholder="Phone"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="company"
+              type="text"
+              placeholder="Company"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="driverName"
+              type="text"
+              placeholder="Driver name"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="truckNumber"
+              type="text"
+              placeholder="Truck number"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="trailerNumber"
+              type="text"
+              placeholder="Trailer number"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="mpMobileUserId"
+              type="text"
+              placeholder="MP mobile user id"
+              className="w-full mb-3"
+            />
+            <InputText
+              id="email"
+              type="text"
+              placeholder="Email address"
+              className="w-full mb-3"
+            />
+          </>
+        );
       default:
         return <></>;
     }
