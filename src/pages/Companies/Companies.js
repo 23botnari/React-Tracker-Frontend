@@ -54,7 +54,7 @@ const Companies = () => {
         className="p-button-rounded p-button-info mr-2"
         onClick={() => {
           dispatch(setIsOpen(true));
-          dispatch(setPanelType("Companies"));
+          dispatch(setPanelType("addCompanies"));
           dispatch(setPanelTitle("Edit Company"));
         }}
       ></Button>
@@ -74,7 +74,7 @@ const Companies = () => {
                 className="p-button-info mr-2"
                 onClick={() => {
                   dispatch(setIsOpen(true));
-                  dispatch(setPanelType("Companies"));
+                  dispatch(setPanelType("editCompanies"));
                   dispatch(setPanelTitle("New Company"));
                 }}
               />

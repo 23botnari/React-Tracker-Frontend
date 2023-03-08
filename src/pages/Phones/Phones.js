@@ -59,7 +59,7 @@ function Phones() {
           className="p-button-rounded p-button-info mr-2"
           onClick={() => {
             dispatch(setIsOpen(true));
-            dispatch(setPanelType("Phones"));
+            dispatch(setPanelType("editPhones"));
             dispatch(setPanelTitle("Update Number"));
           }}
         />
@@ -120,7 +120,7 @@ function Phones() {
               className="p-button-info mr-2"
               onClick={() => {
                 dispatch(setIsOpen(true));
-                dispatch(setPanelType("Phones"));
+                dispatch(setPanelType("addPhones"));
                 dispatch(setPanelTitle("New Number"));
               }}
             />

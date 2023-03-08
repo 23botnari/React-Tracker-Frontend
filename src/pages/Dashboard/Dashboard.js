@@ -19,7 +19,7 @@ function Dashboard() {
     libraries: ["places"],
   });
 
-  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+  const [map, setMap] = useState((null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
@@ -58,7 +58,7 @@ function Dashboard() {
   }
   return (
     // Important! Always set the container height explicitly
-    <div style={{ marginLeft: "-30px", height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       <div>
         <div>Distance: {distance} </div>
         <div>Duration: {duration} </div>

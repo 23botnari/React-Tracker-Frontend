@@ -22,7 +22,7 @@ const SideMenu = () => {
         <div
           className="SideMenu__Brand"
           onClick={() => {
-            window.location.pathname = "/";
+            window.location.pathname = "/dashboard";
           }}
         >
           <img alt="Logo" src={Logo} width="55px" />
@@ -37,25 +37,28 @@ const SideMenu = () => {
                 className="row"
                 id={window.location.pathname === val.link ? "active" : ""}
                 onClick={() => {
-                  if (!!val.link) {
+                  if (val.link) {
                     window.location.pathname = val.link;
-                  }
+                  } else
+                    switch (val.label) {
+                      case "Trips":
+                        dispatch(setIsOpen(true));
+                        dispatch(setPanelType("Trips"));
+                        dispatch(setPanelTitle("Trips"));
+                        if (window.location.pathname !== "/dashboard")
+                          window.location.pathname = "/dashboard";
+                        break;
+                      case "Add Trip":
+                        dispatch(setIsOpen(true));
+                        dispatch(setPanelType("AddTrip"));
+                        dispatch(setPanelTitle("Add Trip"));
+                        if (window.location.pathname !== "/dashboard")
+                          window.location.pathname = "/dashboard";
+                        break;
 
-                  switch (val.label) {
-                    case "Add Trip":
-                      dispatch(setIsOpen(true));
-                      dispatch(setPanelType("AddTrip"));
-                      dispatch(setPanelTitle("Add Trip"));
-                      break;
-                    case "Trips":
-                      dispatch(setIsOpen(true));
-                      dispatch(setPanelType("Trips"));
-                      dispatch(setPanelTitle("Trips"));
-                      break;
-
-                    default:
-                      break;
-                  }
+                      default:
+                        break;
+                    }
                 }}
               >
                 <i id="icon" className={val.icon}></i>

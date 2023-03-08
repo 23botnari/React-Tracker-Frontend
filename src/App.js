@@ -24,8 +24,8 @@ const App = () => {
         className="basic_layout__content"
         style={{
           width: "100%",
-          paddingLeft: !!isExpanded ? `${280}px` : `${115}px`,
-          paddingRight: !!isOpen ? `${400}px` : `${20}px`,
+          paddingLeft: !!isExpanded ? `${250}px` : `${90}px`,
+          paddingRight: !!isOpen ? `${350}px` : `${0}px`,
         }}
       >
         <AppRoutes />
