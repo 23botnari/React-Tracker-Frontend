@@ -7,9 +7,3 @@ export const setCompanies = (companies) => {
   };
 };
 
-// export const setSelectedBook = (bookId) => {
-//   return {
-//     type: ActionTypes.SET_SELECTED_BOOK,
-//     bookId,
-//   };
-// };

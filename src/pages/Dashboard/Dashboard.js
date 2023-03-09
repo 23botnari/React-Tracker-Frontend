@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 
-const center = { lat: 48.8584, lng: 2.2945 };
+const center = { lat: 47.0105, lng: 28.8638 };
 
 function Dashboard() {
   const { isLoaded } = useJsApiLoader({
@@ -19,7 +19,7 @@ function Dashboard() {
     libraries: ["places"],
   });
 
-  const [map, setMap] = useState((null));
+  const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
@@ -57,18 +57,27 @@ function Dashboard() {
     destiantionRef.current.value = "";
   }
   return (
-    // Important! Always set the container height explicitly
-    <div style={{ height: "100vh", width: "100%" }}>
-      <div>
+    <div style={{ height: "100%", width: "100%" }}>
+      <GoogleMap
+        center={center}
+        zoom={8}
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        options={{
+          zoomControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false,
+        }}
+        onLoad={(map) => setMap(map)}
+      >
+        {directionsResponse && (
+          <DirectionsRenderer directions={directionsResponse} />
+        )}
+      </GoogleMap>
+      <div style={{height:"300px"}}>
+
         <div>Distance: {distance} </div>
         <div>Duration: {duration} </div>
-        <Button
-          aria-label="center back"
-          onClick={() => {
-            map.panTo(center);
-            map.setZoom(15);
-          }}
-        />
         <Autocomplete>
           <InputText type="text" placeholder="Origin" ref={originRef} />
         </Autocomplete>
@@ -86,23 +95,6 @@ function Dashboard() {
           Clear
         </Button>
       </div>
-      <GoogleMap
-        center={center}
-        zoom={15}
-        mapContainerStyle={{ width: "100%", height: "100%" }}
-        options={{
-          zoomControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: false,
-        }}
-        onLoad={(map) => setMap(map)}
-      >
-        <Marker position={center} />
-        {directionsResponse && (
-          <DirectionsRenderer directions={directionsResponse} />
-        )}
-      </GoogleMap>
     </div>
   );
 }

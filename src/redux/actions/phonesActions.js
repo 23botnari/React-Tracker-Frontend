@@ -7,9 +7,3 @@ export const setPhones = (phones) => {
   };
 };
 
-// export const setSelectedBook = (bookId) => {
-//   return {
-//     type: ActionTypes.SET_SELECTED_BOOK,
-//     bookId,
-//   };
-// };

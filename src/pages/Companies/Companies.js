@@ -54,7 +54,7 @@ const Companies = () => {
         className="p-button-rounded p-button-info mr-2"
         onClick={() => {
           dispatch(setIsOpen(true));
-          dispatch(setPanelType("addCompanies"));
+          dispatch(setPanelType("editCompanies"));
           dispatch(setPanelTitle("Edit Company"));
         }}
       ></Button>
@@ -63,36 +63,34 @@ const Companies = () => {
 
   return (
     <div className="CompaniesContent">
-      <div className="CompaniesTable">
-        <div className="CompaniesTableHeader">
-          <div className="CompaniesTableHeader__text">
-            <h3>Companies</h3>
-            <div className="CompaniesTableHeader__button">
-              <Button
-                label="Add Company"
-                icon="pi pi-plus"
-                className="p-button-info mr-2"
-                onClick={() => {
-                  dispatch(setIsOpen(true));
-                  dispatch(setPanelType("editCompanies"));
-                  dispatch(setPanelTitle("New Company"));
-                }}
-              />
-            </div>
+      <div className="CompaniesTableHeader">
+        <div className="CompaniesTableHeader__text">
+          <h2>Companies</h2>
+          <div className="CompaniesTableHeader__button">
+            <Button
+              label="Add Company"
+              icon="pi pi-plus"
+              className="p-button-info mr-2"
+              onClick={() => {
+                dispatch(setIsOpen(true));
+                dispatch(setPanelType("addCompanies"));
+                dispatch(setPanelTitle("Add Company"));
+              }}
+            />
           </div>
-          <DataTable
-            value={companies}
-            responsiveLayout="scroll"
-            rows={10}
-            paginator
-          >
-            <Column field="name" header="Name" />
-            <Column body={statusCircle} dataType="boolean" header="Is active	" />
-            <Column field="createdAt" header="Created at	" />
-            <Column field="updatedAt" header="Updated at	" />
-            <Column body={editButton} header="Actions"></Column>
-          </DataTable>
         </div>
+        <DataTable
+          value={companies}
+          responsiveLayout="scroll"
+          rows={10}
+          paginator
+        >
+          <Column field="name" header="Name" />
+          <Column body={statusCircle} dataType="boolean" header="Is active	" />
+          <Column field="createdAt" header="Created at	" />
+          <Column field="updatedAt" header="Updated at	" />
+          <Column body={editButton} header="Actions"></Column>
+        </DataTable>
       </div>
     </div>
   );

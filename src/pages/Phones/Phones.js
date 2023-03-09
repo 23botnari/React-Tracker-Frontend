@@ -109,7 +109,7 @@ function Phones() {
   };
 
   return (
-    <div>
+    <div className="PhoneContent">
       <div className="PhoneHeader">
         <div className="PhoneHeader__text">
           <h2>Numbers</h2>
@@ -137,7 +137,7 @@ function Phones() {
         value={phones}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         paginator
-        rows={10}
+        rows={7}
         responsiveLayout="scroll"
         dataKey="id"
         filters={filters}
