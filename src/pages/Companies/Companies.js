@@ -76,7 +76,9 @@ const Companies = () => {
       </>
     );
   };
-
+  const refreshPage = () => {
+    window.location.reload(false);
+  };
   return (
     <>
       <div className="CompaniesContent">
@@ -94,13 +96,21 @@ const Companies = () => {
                   dispatch(setPanelTitle("Add Company"));
                 }}
               />
+               <Button
+                icon="pi pi-replay"
+                className="p-button-secondary p-button-rounded p-button-outlined mr-2"
+                aria-label="Bookmark"
+                onClick={refreshPage}
+              />
             </div>
           </div>
           <DataTable
             value={companies}
             responsiveLayout="scroll"
             rows={10}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             paginator
+            lazy={true}
           >
             <Column field="companyName" header="Name" />
             <Column body={statusCircle} dataType="boolean" header="Is active	" />

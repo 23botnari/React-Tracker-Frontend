@@ -71,7 +71,6 @@ const SidePanelTemplate = ({
       .catch((error) => {
         console.error(error);
       });
-    window.location.reload();
   };
   const editCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
