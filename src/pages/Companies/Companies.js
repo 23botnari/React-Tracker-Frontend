@@ -14,19 +14,18 @@ import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
 
 import { formatDate } from "../../helpers/utils";
-
 const Companies = () => {
   const { companies } = useSelector((state) => state.CompaniesReducer);
 
   const dispatch = useDispatch();
 
-  const getCompanies = async () => {
-    fetch("https://mockend.com/23botnari/teza/companies")
+  const getCompanies = () => {
+    fetch("http://localhost:4000/companies")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        data.map((item) => {
+        data?.map((item) => {
           item.createdAt = formatDate(item.createdAt);
           item.updatedAt = formatDate(item.updatedAt);
           return data;
@@ -38,6 +37,7 @@ const Companies = () => {
   useEffect(() => {
     getCompanies();
   }, []);
+  console.log(companies);
 
   const statusCircle = (rowData) => {
     return (
@@ -102,7 +102,7 @@ const Companies = () => {
             rows={10}
             paginator
           >
-            <Column field="name" header="Name" />
+            <Column field="companyName" header="Name" />
             <Column body={statusCircle} dataType="boolean" header="Is active	" />
             <Column field="createdAt" header="Created at	" />
             <Column field="updatedAt" header="Updated at	" />

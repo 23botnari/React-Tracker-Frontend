@@ -27,7 +27,7 @@ function Phones() {
   });
 
   const getPhones = async () => {
-    fetch("https://mockend.com/23botnari/teza/phones")
+    fetch("http://localhost:4000/phones")
       .then((response) => {
         return response.json();
       })

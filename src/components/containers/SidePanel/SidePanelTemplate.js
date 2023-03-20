@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import "./SidePanel.scss";
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
-import {Button} from "primereact/button"
+import { Button } from "primereact/button";
 import { useDispatch } from "react-redux";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
 
@@ -20,13 +20,8 @@ const SidePanelTemplate = ({
   panelSubmit,
 }) => {
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState(false);
-  const [values, setValues] = useState({
-    name: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    isActive: true,
-  });
+  const [values, setValues] = useState("");
+
   const originRef = useRef();
   const destiantionRef = useRef();
 
@@ -36,16 +31,10 @@ const SidePanelTemplate = ({
   };
 
   function clearRoute() {
-    dispatch(setOriginPoint(originRef.current.value = ''));
-    dispatch(setDestinationPoint(destiantionRef.current.value= ''));
+    dispatch(setOriginPoint((originRef.current.value = "")));
+    dispatch(setDestinationPoint((destiantionRef.current.value = "")));
   }
 
-  const createCompany = async (data) => {
-    fetch("https://mockend.com/23botnari/teza/companies", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  };
   const createPhone = async (data) => {
     fetch("https://mockend.com/23botnari/teza/", {
       method: "POST",
@@ -63,6 +52,26 @@ const SidePanelTemplate = ({
       method: "POST",
       body: JSON.stringify(data),
     });
+  };
+  const [companyName, setCompanyName] = useState("");
+  const [checked, setChecked] = useState(Boolean);
+
+  const createCompany = async () => {
+    await fetch("http://localhost:4000/companies", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        companyName: companyName,
+        isActive: checked,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    window.location.reload();
   };
   const editCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
@@ -213,7 +222,8 @@ const SidePanelTemplate = ({
         );
 
       case "addCompanies":
-        panelSubmit = createCompany();
+        panelSubmit = createCompany;
+
         return (
           <>
             <InputText
@@ -221,10 +231,8 @@ const SidePanelTemplate = ({
               type="text"
               placeholder="Company"
               className="w-full mb-3"
-              value={values.name}
-              onChange={(e) => {
-                setValues((prev) => ({ ...prev, name: e.target.value }));
-              }}
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
             />
 
             <div className="flex align-items-center">
@@ -232,7 +240,7 @@ const SidePanelTemplate = ({
                 id="checkIsActive"
                 onChange={(e) => setChecked(e.checked)}
                 checked={checked}
-                value={values.isActive}
+                value={checked}
                 className="mr-2"
               />
               <label htmlFor="checkIsActive">Is Active</label>
@@ -292,6 +300,7 @@ const SidePanelTemplate = ({
           </button>
           <button
             className="p-element p-button-success p-button p-component"
+            type="submit"
             onClick={panelSubmit}
           >
             Submit
