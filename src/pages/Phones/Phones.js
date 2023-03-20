@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,6 +12,8 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Messages } from "primereact/messages";
+
 import { FilterMatchMode } from "primereact/api";
 
 import "./Phones.scss";
@@ -50,7 +52,15 @@ function Phones() {
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
-
+  const msgs = useRef(null);
+  const deleteMessage = () => {
+    msgs.current.show({
+      severity: "success",
+      summary: "Phone-number has been deleted succesfull.",
+      closable: false,
+      life: 2400,
+    });
+  };
   const actionButtons = () => {
     return (
       <>
@@ -84,6 +94,7 @@ function Phones() {
         <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-danger mr-2"
+          onClick={deleteMessage}
         />
       </>
     );
@@ -109,56 +120,65 @@ function Phones() {
   };
 
   return (
-    <div className="PhoneContent">
-      <div className="PhoneHeader">
-        <div className="PhoneHeader__text">
-          <h2>Numbers</h2>
-          <div className="PhoneHeader__button">
-            <Button
-              label="Buy a number"
-              icon="pi pi-plus"
-              className="p-button-info mr-2"
-              onClick={() => {
-                dispatch(setIsOpen(true));
-                dispatch(setPanelType("addPhones"));
-                dispatch(setPanelTitle("New Number"));
-              }}
-            />
-            <Button
-              icon="pi pi-replay"
-              className="p-button-secondary p-button-rounded p-button-outlined mr-2"
-              aria-label="Bookmark"
-              onClick={refreshPage}
-            />
+    <>
+      <div className="PhoneContent">
+        <div className="PhoneHeader">
+          <div className="PhoneHeader__text">
+            <h2>Numbers</h2>
+            <div className="PhoneHeader__button">
+              <Button
+                label="Buy a number"
+                icon="pi pi-plus"
+                className="p-button-info mr-2"
+                onClick={() => {
+                  dispatch(setIsOpen(true));
+                  dispatch(setPanelType("addPhones"));
+                  dispatch(setPanelTitle("New Number"));
+                }}
+              />
+              <Button
+                icon="pi pi-replay"
+                className="p-button-secondary p-button-rounded p-button-outlined mr-2"
+                aria-label="Bookmark"
+                onClick={refreshPage}
+              />
+            </div>
           </div>
         </div>
+        <DataTable
+          value={phones}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          paginator
+          rows={7}
+          responsiveLayout="scroll"
+          dataKey="id"
+          filters={filters}
+          globalFilterFields={[
+            "phoneNumber",
+            "company",
+            "driverName",
+            "truckNumber",
+            "trailerNumber",
+            "mpMobileUserId",
+          ]}
+        >
+          <Column
+            field="phoneNumber"
+            header="Phone"
+            style={{ width: "200px" }}
+          />
+          <Column field="company" header="Company	" />
+          <Column field="driverName" header="Driver name	" />
+          <Column field="truckNumber" header="Truck number	" />
+          <Column field="trailerNumber" header="Trailer number" />
+          <Column field="mpMobileUserId" header="MP mobile user id	" />
+          <Column body={actionButtons} header={searchKeywords}></Column>
+        </DataTable>
       </div>
-      <DataTable
-        value={phones}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        paginator
-        rows={7}
-        responsiveLayout="scroll"
-        dataKey="id"
-        filters={filters}
-        globalFilterFields={[
-          "phoneNumber",
-          "company",
-          "driverName",
-          "truckNumber",
-          "trailerNumber",
-          "mpMobileUserId",
-        ]}
-      >
-        <Column field="phoneNumber" header="Phone" style={{ width: "200px" }} />
-        <Column field="company" header="Company	" />
-        <Column field="driverName" header="Driver name	" />
-        <Column field="truckNumber" header="Truck number	" />
-        <Column field="trailerNumber" header="Trailer number" />
-        <Column field="mpMobileUserId" header="MP mobile user id	" />
-        <Column body={actionButtons} header={searchKeywords}></Column>
-      </DataTable>
-    </div>
+      <div className="message">
+        <Messages ref={msgs} />
+      </div>
+    </>
   );
 }
 export default Phones;
