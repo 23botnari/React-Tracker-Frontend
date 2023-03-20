@@ -1,61 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   useJsApiLoader,
   GoogleMap,
-  Marker,
-  Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api";
-import { useRef, useState } from "react";
-import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
+
+import { useSelector } from "react-redux";
 
 const center = { lat: 47.0105, lng: 28.8638 };
-
 function Dashboard() {
+  const [libraries] = useState(["places"]);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyB9K5uKIZHk4e5N2jKcgRvNgCZ7hpT4LeM",
-    libraries: ["places"],
+    libraries: libraries,
   });
 
   const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
 
-  const originRef = useRef();
+  const { originPoint, destinationPoint } = useSelector(
+    (state) => state.DashboardReducer
+  );
 
-  const destiantionRef = useRef();
-
-  if (!isLoaded) {
-    return <div>aaaaaaaaaaaaaaa</div>;
-  }
-
-  async function calculateRoute() {
-    if (originRef.current.value === "" || destiantionRef.current.value === "") {
-      return;
+  async function calculateRoute(originPoint, destinationPoint) {
+    if (originPoint === "" || destinationPoint === "") {
+      return setDirectionsResponse(null);
+      //Message-Primereact error input
     }
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
-      origin: originRef.current.value,
-      destination: destiantionRef.current.value,
+      origin: originPoint,
+      destination: destinationPoint,
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.DRIVING,
     });
     setDirectionsResponse(results);
-    setDistance(results.routes[0].legs[0].distance.text);
-    setDuration(results.routes[0].legs[0].duration.text);
   }
 
-  function clearRoute() {
-    setDirectionsResponse(null);
-    setDistance("");
-    setDuration("");
-    originRef.current.value = "";
-    destiantionRef.current.value = "";
+  useEffect(() => {
+    calculateRoute(originPoint, destinationPoint);
+  }, [originPoint, destinationPoint]);
+
+  if (!isLoaded) {
+    return <div>Google Map Api is loading...</div>;
   }
+  
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <GoogleMap
@@ -74,27 +65,6 @@ function Dashboard() {
           <DirectionsRenderer directions={directionsResponse} />
         )}
       </GoogleMap>
-      <div style={{height:"300px"}}>
-
-        <div>Distance: {distance} </div>
-        <div>Duration: {duration} </div>
-        <Autocomplete>
-          <InputText type="text" placeholder="Origin" ref={originRef} />
-        </Autocomplete>
-        <Autocomplete>
-          <InputText
-            type="text"
-            placeholder="Destination"
-            ref={destiantionRef}
-          />
-        </Autocomplete>
-        <Button type="submit" onClick={calculateRoute}>
-          Calculate Route
-        </Button>
-        <Button aria-label="center back" onClick={clearRoute}>
-          Clear
-        </Button>
-      </div>
     </div>
   );
 }

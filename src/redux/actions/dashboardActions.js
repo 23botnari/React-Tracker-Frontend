@@ -1,20 +1,15 @@
 import { ActionTypes } from "../constants/action-types";
 
-export const setDirectionsResponse = (directionsResponse) => {
+
+export const setOriginPoint = (originPoint) => {
   return {
-    type: ActionTypes.SET_DIRECTIONS_RESPONSE,
-    directionsResponse,
+    type: ActionTypes.SET_MAP_ORIGIN,
+    originPoint,
   };
 };
-export const setOriginMap = (originMap) => {
+export const setDestinationPoint = (destinationPoint) => {
   return {
-    type: ActionTypes.SET_ORIGIN_MAP,
-    originMap,
-  };
-};
-export const setDestinationMap = (destinationMap) => {
-  return {
-    type: ActionTypes.SET_DESTINATION_MAP,
-    destinationMap,
+    type: ActionTypes.SET_MAP_DESTINATION,
+    destinationPoint,
   };
 };

@@ -1,13 +1,17 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useState, useRef } from "react";
+import "./SidePanel.scss";
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
-
+import {Button} from "primereact/button"
 import { useDispatch } from "react-redux";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
 
-import "./SidePanel.scss";
+import {
+  setDestinationPoint,
+  setOriginPoint,
+} from "../../../redux/actions/dashboardActions";
 
 const SidePanelTemplate = ({
   isActive,
@@ -15,6 +19,7 @@ const SidePanelTemplate = ({
   panelTitle,
   panelSubmit,
 }) => {
+  const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
   const [values, setValues] = useState({
     name: "",
@@ -22,31 +27,18 @@ const SidePanelTemplate = ({
     updatedAt: new Date(),
     isActive: true,
   });
-  const [map, setMap] = useState((null));
-  const [directionsResponse, setDirectionsResponse] = useState(null);
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
   const originRef = useRef();
-
   const destiantionRef = useRef();
 
-  async function calculateRoute() {
-    if (originRef.current.value === "" || destiantionRef.current.value === "") {
-      return;
-    }
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: originRef.current.value,
-      destination: destiantionRef.current.value,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
-    });
-    setDirectionsResponse(results);
-    setDistance(results.routes[0].legs[0].distance.text);
-    setDuration(results.routes[0].legs[0].duration.text);
+  const calculateNewRoute = () => {
+    dispatch(setOriginPoint(originRef.current.value));
+    dispatch(setDestinationPoint(destiantionRef.current.value));
+  };
+
+  function clearRoute() {
+    dispatch(setOriginPoint(originRef.current.value = ''));
+    dispatch(setDestinationPoint(destiantionRef.current.value= ''));
   }
-  const dispatch = useDispatch();
 
   const createCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
@@ -85,7 +77,7 @@ const SidePanelTemplate = ({
         return <></>;
 
       case "AddTrip":
-        panelSubmit = calculateRoute;
+        panelSubmit = calculateNewRoute;
         return (
           <>
             <Autocomplete>
@@ -130,6 +122,7 @@ const SidePanelTemplate = ({
               placeholder="Trailer number"
               className="w-full mb-3"
             />
+            <Button onClick={clearRoute}>Clear</Button>
           </>
         );
 
@@ -299,9 +292,7 @@ const SidePanelTemplate = ({
           </button>
           <button
             className="p-element p-button-success p-button p-component"
-            onClick={
-              panelSubmit
-            }
+            onClick={panelSubmit}
           >
             Submit
           </button>
