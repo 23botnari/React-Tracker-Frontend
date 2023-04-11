@@ -1,73 +1,49 @@
 import React, { useState } from "react";
 import "./Login.css";
-import bcrypt from "bcryptjs";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { useAppContext } from "../../../lib/contextLib";
-
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const validateForm = () => {
-    return email.length > 0 && password.length > 0;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      if (!validateForm()) {
-        throw new Error("Email and password are required");
-      }
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const response = await fetch("http://localhost", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password: hashedPassword }),
-      });
-      if (!response.ok) {
-        throw new Error("Authentication failed");
-      }
-      userHasAuthenticated(true);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
+import PropTypes from 'prop-types';
+async function loginUser(credentials) {
+  return fetch('http://localhost:4000/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  })
+    .then(data => data.json())
+ }
+export default function Login({setToken}) {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const token = await loginUser({
+      email,
+      password
+    });
+    setToken(token);
+  }
   return (
-    <div className="center-login">
-      <form onSubmit={handleSubmit}>
-        <h1>React Tracker</h1>
-
-        <div className="p-inputgroup">
-          <span className="p-inputgroup-addon">
-            <i className="pi pi-user"></i>
-          </span>
-          <InputText
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <br />
-        <div className="p-inputgroup">
-          <span className="p-inputgroup-addon">
-            <i className="pi pi-lock"></i>
-          </span>
-          <InputText
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <br />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <Button label="Login" disabled={!validateForm()} />
-      </form>
-    </div>
+    <div className="login-wrapper">
+    <h1>Please Log In</h1>
+    <form onSubmit={handleSubmit}>
+      <label>
+        <p>Username</p>
+        <input type="text" onChange={e => setEmail(e.target.value)}/>
+      </label>
+      <label>
+        <p>Password</p>
+        <input type="password" onChange={e => setPassword(e.target.value)}/>
+      </label>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
   );
 };
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+}

@@ -51,11 +51,33 @@ const Companies = () => {
   const deleteMessage = () => {
     msgs.current.show({
       severity: "success",
-      summary: "Phone-number has been deleted succesfull.",
+      summary: "Company has been deleted succesful.",
       closable: false,
       life: 2400,
     });
   };
+  const deleteCompany = async (id) => {
+    await fetch(`http://localhost:4000/companies/641880ca9f9cfb1da1a1315f`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+    const deleteCompany1 = async () => {
+      fetch("http://localhost:4000/companies/64189ec9d0e0abf756b00bf5", 
+      { 
+        method: "DELETE" 
+      })
+     
+    };
+
   const actionButtons = () => {
     return (
       <>
@@ -69,9 +91,9 @@ const Companies = () => {
           }}
         ></Button>
         <Button
-          icon="pi pi-trash"
+          icon="pi pi-shopping-cart"
           className="p-button-rounded p-button-danger mr-2"
-          onClick={deleteMessage}
+          onClick={deleteCompany}
         />
       </>
     );
@@ -79,6 +101,7 @@ const Companies = () => {
   const refreshPage = () => {
     window.location.reload(false);
   };
+
   return (
     <>
       <div className="CompaniesContent">
@@ -96,7 +119,7 @@ const Companies = () => {
                   dispatch(setPanelTitle("Add Company"));
                 }}
               />
-               <Button
+              <Button
                 icon="pi pi-replay"
                 className="p-button-secondary p-button-rounded p-button-outlined mr-2"
                 aria-label="Bookmark"
@@ -106,11 +129,10 @@ const Companies = () => {
           </div>
           <DataTable
             value={companies}
-            responsiveLayout="scroll"
-            rows={10}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             paginator
-            lazy={true}
+            rows={7}
+            responsiveLayout="scroll"
           >
             <Column field="companyName" header="Name" />
             <Column body={statusCircle} dataType="boolean" header="Is active	" />

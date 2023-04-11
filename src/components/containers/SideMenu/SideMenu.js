@@ -11,11 +11,15 @@ import {
 } from "../../../redux/actions/sidePanelActions";
 
 import { setIsExpanded } from "../../../redux/actions/sideMenuActions";
+import useToken from "../Login/useToken";
 
 const SideMenu = () => {
   const { isExpanded } = useSelector((state) => state.SideMenuReducer);
   const dispatch = useDispatch();
-
+  const { setToken } = useToken();
+  const refreshPage = () => {
+    document.location.reload(false);
+  };
   return (
     <>
       <div className={`SideMenu ${!!isExpanded ? "expanded" : ""}`}>
@@ -55,9 +59,14 @@ const SideMenu = () => {
                         if (window.location.pathname !== "/dashboard")
                           window.location.pathname = "/dashboard";
                         break;
-
+                   
                       default:
                         break;
+                    }
+                    if (val.label ==="Log Out"){
+                      window.location.pathname = "/auth/login";
+                      setToken(null);
+                  
                     }
                 }}
               >
