@@ -107,7 +107,7 @@ const Companies = () => {
       <div className="CompaniesContent">
         <div className="CompaniesTableHeader">
           <div className="CompaniesTableHeader__text">
-            <h2>Companies</h2>
+            <h2>Companiess </h2>
             <div className="CompaniesTableHeader__button">
               <Button
                 label="Add Company"
