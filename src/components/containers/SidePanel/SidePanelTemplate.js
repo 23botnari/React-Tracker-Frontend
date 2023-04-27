@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import "./SidePanel.scss";
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
@@ -7,11 +7,12 @@ import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { useDispatch } from "react-redux";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
-
+import { useSelector } from "react-redux";
 import {
   setDestinationPoint,
   setOriginPoint,
 } from "../../../redux/actions/dashboardActions";
+import { addCompany, setCompanies } from "../../../redux/actions/companiesActions";
 
 const SidePanelTemplate = ({
   isActive,
@@ -55,6 +56,7 @@ const SidePanelTemplate = ({
   };
   const [companyName, setCompanyName] = useState("");
   const [checked, setChecked] = useState(Boolean);
+  const { companies } = useSelector((state) => state.CompaniesReducer);
 
   const createCompany = async () => {
     await fetch("http://localhost:4000/companies", {
@@ -68,9 +70,13 @@ const SidePanelTemplate = ({
       .then((response) => {
         return response.json();
       })
+      .then((data) => {
+        dispatch(addCompany(true));
+      })
       .catch((error) => {
         console.error(error);
       });
+      
   };
   const editCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {

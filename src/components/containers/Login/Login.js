@@ -22,7 +22,6 @@ export default function Login({setToken}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = async e => {
-    // window.location.href('http://localhost:3000/')
     e.preventDefault();
     const token = await loginUser({
       email,

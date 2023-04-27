@@ -12,10 +12,16 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
-
+import { useState } from "react";
 import { formatDate } from "../../helpers/utils";
+import { store } from "../../redux/store";
+
 const Companies = () => {
-  const { companies } = useSelector((state) => state.CompaniesReducer);
+  const [refreshTable, setRefreshTable] = useState(false);
+
+  const { companies, addCompany } = useSelector(
+    (state) => state.CompaniesReducer
+  );
 
   const dispatch = useDispatch();
 
@@ -36,7 +42,7 @@ const Companies = () => {
 
   useEffect(() => {
     getCompanies();
-  }, []);
+  }, [refreshTable, addCompany]);
   console.log(companies);
 
   const statusCircle = (rowData) => {
@@ -56,8 +62,8 @@ const Companies = () => {
       life: 2400,
     });
   };
-  const deleteCompany = async (id) => {
-    await fetch(`http://localhost:4000/companies/641880ca9f9cfb1da1a1315f`, {
+  const deleteCompany = async (_id) => {
+    await fetch(`http://localhost:4000/companies/${_id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -69,16 +75,17 @@ const Companies = () => {
         console.error(error);
       });
   };
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this company?")) {
+      deleteCompany(id).then(() => {
+        setRefreshTable(!refreshTable);
+      });
+      setCompanies(companies.filter((company) => company._id !== id));
+      // deleteMessage()
+    }
+  };
 
-    const deleteCompany1 = async () => {
-      fetch("http://localhost:4000/companies/64189ec9d0e0abf756b00bf5", 
-      { 
-        method: "DELETE" 
-      })
-     
-    };
-
-  const actionButtons = () => {
+  const actionButtons = (rowData) => {
     return (
       <>
         <Button
@@ -93,13 +100,13 @@ const Companies = () => {
         <Button
           icon="pi pi-shopping-cart"
           className="p-button-rounded p-button-danger mr-2"
-          onClick={deleteCompany}
+          onClick={() => handleDelete(rowData._id)}
         />
       </>
     );
   };
   const refreshPage = () => {
-    window.location.reload(false);
+    setRefreshTable(!refreshTable);
   };
 
   return (
@@ -107,7 +114,7 @@ const Companies = () => {
       <div className="CompaniesContent">
         <div className="CompaniesTableHeader">
           <div className="CompaniesTableHeader__text">
-            <h2>Companiess </h2>
+            <h2>Companies </h2>
             <div className="CompaniesTableHeader__button">
               <Button
                 label="Add Company"

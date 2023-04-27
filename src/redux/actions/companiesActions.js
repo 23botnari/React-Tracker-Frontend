@@ -7,3 +7,9 @@ export const setCompanies = (companies) => {
   };
 };
 
+export const addCompany = (status) => {
+  return {
+    type: ActionTypes.ADD_COMPANY,
+    payload: status,
+  };
+};
