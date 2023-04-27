@@ -56,7 +56,6 @@ const SidePanelTemplate = ({
   };
   const [companyName, setCompanyName] = useState("");
   const [checked, setChecked] = useState(Boolean);
-  const { companies } = useSelector((state) => state.CompaniesReducer);
 
   const createCompany = async () => {
     await fetch("http://localhost:4000/companies", {
@@ -72,11 +71,12 @@ const SidePanelTemplate = ({
       })
       .then((data) => {
         dispatch(addCompany(true));
+        dispatch(setIsOpen(false))
       })
       .catch((error) => {
         console.error(error);
       });
-      
+     
   };
   const editCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
@@ -254,7 +254,8 @@ const SidePanelTemplate = ({
         );
 
       case "editCompanies":
-        panelSubmit = editCompany();
+        panelSubmit = editCompany()
+        
         return (
           <>
             <InputText
