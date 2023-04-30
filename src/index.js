@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 
-import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
