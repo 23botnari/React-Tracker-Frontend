@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState,useEffect, useRef } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,9 +12,8 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
-import { useState } from "react";
 import { formatDate } from "../../helpers/utils";
-import { store } from "../../redux/store";
+
 
 const Companies = () => {
   const [refreshTable, setRefreshTable] = useState(false);
@@ -57,7 +56,7 @@ const Companies = () => {
   const deleteMessage = () => {
     msgs.current.show({
       severity: "success",
-      summary: "Company has been deleted succesful.",
+      summary: "Company has been deleted succesfully.",
       closable: false,
       life: 2400,
     });
@@ -77,11 +76,15 @@ const Companies = () => {
   };
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this company?")) {
-      deleteCompany(id).then(() => {
+      deleteCompany(id)
+      .then(() => {
         setRefreshTable(!refreshTable);
+      })
+      .catch((error) =>{
+        console.log(error)
       });
       setCompanies(companies.filter((company) => company._id !== id));
-      // deleteMessage()
+       deleteMessage()
     }
   };
 

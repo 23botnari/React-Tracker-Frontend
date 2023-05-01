@@ -20,8 +20,6 @@ async function loginUser(credentials) {
 export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
 
   const navigate = useNavigate();
   const msgs = useRef(null);
@@ -41,7 +39,7 @@ export default function Login({ setToken }) {
     if (!email || !password ) {
       errorMessage();
     } else {
-      console.log("1");
+      console.log("All is alright.");
     }
 
     const token = await loginUser({
