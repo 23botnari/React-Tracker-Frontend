@@ -19,9 +19,13 @@ import { FilterMatchMode } from "primereact/api";
 import "./Phones.scss";
 
 function Phones() {
-  const { phones } = useSelector((state) => state.PhonesReducer);
-  const dispatch = useDispatch();
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [refreshTable, setRefreshTable] = useState(false);
+
+  const msgs = useRef(null);
+  const dispatch = useDispatch();
+
+  const { phones } = useSelector((state) => state.PhonesReducer);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -41,7 +45,7 @@ function Phones() {
 
   useEffect(() => {
     getPhones();
-  }, []);
+  }, [refreshTable]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -52,16 +56,45 @@ function Phones() {
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
-  const msgs = useRef(null);
+
   const deleteMessage = () => {
     msgs.current.show({
       severity: "success",
-      summary: "Phone-number has been deleted succesfull.",
+      summary: "Driver was deleted succesfully.",
       closable: false,
       life: 2400,
     });
   };
-  const actionButtons = () => {
+
+  const deletePhone = async (_id) => {
+    await fetch(`http://localhost:4000/phones/${_id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this Driver?")) {
+      deletePhone(id)
+        .then(() => {
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setPhones(phones.filter((phone) => phone._id !== id));
+      deleteMessage();
+    }
+  };
+
+  const actionButtons = (rowData) => {
     return (
       <>
         <Button
@@ -94,14 +127,14 @@ function Phones() {
         <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-danger mr-2"
-          onClick={deleteMessage}
+          onClick={() => handleDelete(rowData._id)}
         />
       </>
     );
   };
 
   const refreshPage = () => {
-    window.location.reload(false);
+    setRefreshTable(!refreshTable);
   };
 
   const searchKeywords = () => {

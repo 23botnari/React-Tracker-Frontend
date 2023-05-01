@@ -17,12 +17,13 @@ import { formatDate } from "../../helpers/utils";
 
 const Companies = () => {
   const [refreshTable, setRefreshTable] = useState(false);
-
+  const msgs = useRef(null);
+  
   const { companies, addCompany } = useSelector(
     (state) => state.CompaniesReducer
-  );
-
-  const dispatch = useDispatch();
+    );
+    
+    const dispatch = useDispatch();
 
   const getCompanies = () => {
     fetch("http://localhost:4000/companies")
@@ -42,7 +43,6 @@ const Companies = () => {
   useEffect(() => {
     getCompanies();
   }, [refreshTable, addCompany]);
-  console.log(companies);
 
   const statusCircle = (rowData) => {
     return (
@@ -52,7 +52,6 @@ const Companies = () => {
       ></i>
     );
   };
-  const msgs = useRef(null);
   const deleteMessage = () => {
     msgs.current.show({
       severity: "success",
