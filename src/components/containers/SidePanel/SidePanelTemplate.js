@@ -12,7 +12,11 @@ import {
   setDestinationPoint,
   setOriginPoint,
 } from "../../../redux/actions/dashboardActions";
-import { addCompany, setCompanies } from "../../../redux/actions/companiesActions";
+import {
+  addCompany,
+  setCompanies,
+} from "../../../redux/actions/companiesActions";
+import { addPhones } from "../../../redux/actions/phonesActions";
 
 const SidePanelTemplate = ({
   isActive,
@@ -20,11 +24,19 @@ const SidePanelTemplate = ({
   panelTitle,
   panelSubmit,
 }) => {
-  const dispatch = useDispatch();
+  const [companyName, setCompanyName] = useState("");
+  const [checked, setChecked] = useState(Boolean);
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [company, setCompany] = useState("");
+  const [driverName, setDriverName] = useState("");
+  const [truckNumber, setTruckNumber] = useState("");
+
   const [values, setValues] = useState("");
 
   const originRef = useRef();
   const destiantionRef = useRef();
+  const dispatch = useDispatch();
 
   const calculateNewRoute = () => {
     dispatch(setOriginPoint(originRef.current.value));
@@ -36,28 +48,44 @@ const SidePanelTemplate = ({
     dispatch(setDestinationPoint((destiantionRef.current.value = "")));
   }
 
-  const createPhone = async (data) => {
-    fetch("https://mockend.com/23botnari/teza/", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  };
   const createTrip = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
       method: "POST",
       body: JSON.stringify(data),
     });
   };
+
   const createMessage = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
       method: "POST",
       body: JSON.stringify(data),
     });
   };
-  const [companyName, setCompanyName] = useState("");
-  const [checked, setChecked] = useState(Boolean);
 
-  const createCompany = async () => {
+  const createPhones = async (data) => {
+    await fetch("http://localhost:4000/phones/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+        company: company,
+        driverName: driverName,
+        truckNumber: truckNumber,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        dispatch(addPhones(true));
+        dispatch(setIsOpen(false));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const createCompany = async (data) => {
     await fetch("http://localhost:4000/companies", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,13 +99,13 @@ const SidePanelTemplate = ({
       })
       .then((data) => {
         dispatch(addCompany(true));
-        dispatch(setIsOpen(false))
+        dispatch(setIsOpen(false));
       })
       .catch((error) => {
         console.error(error);
       });
-     
   };
+
   const editCompany = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
       method: "POST",
@@ -141,49 +169,39 @@ const SidePanelTemplate = ({
         );
 
       case "addPhones":
-        panelSubmit = createPhone();
+        panelSubmit = createPhones;
         return (
           <>
             <InputText
               id="phoneNumber"
               type="text"
               placeholder="Phone"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               className="w-full mb-3"
             />
             <InputText
               id="company"
               type="text"
               placeholder="Company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
               className="w-full mb-3"
             />
             <InputText
               id="driverName"
               type="text"
               placeholder="Driver name"
+              value={driverName}
+              onChange={(e) => setDriverName(e.target.value)}
               className="w-full mb-3"
             />
             <InputText
               id="truckNumber"
               type="text"
               placeholder="Truck number"
-              className="w-full mb-3"
-            />
-            <InputText
-              id="trailerNumber"
-              type="text"
-              placeholder="Trailer number"
-              className="w-full mb-3"
-            />
-            <InputText
-              id="mpMobileUserId"
-              type="text"
-              placeholder="MP mobile user id"
-              className="w-full mb-3"
-            />
-            <InputText
-              id="email"
-              type="text"
-              placeholder="Email address"
+              value={truckNumber}
+              onChange={(e) => setTruckNumber(e.target.value)}
               className="w-full mb-3"
             />
           </>
@@ -232,7 +250,7 @@ const SidePanelTemplate = ({
         return (
           <>
             <InputText
-              id="company"
+              id="companyName"
               type="text"
               placeholder="Company"
               className="w-full mb-3"
@@ -254,8 +272,8 @@ const SidePanelTemplate = ({
         );
 
       case "editCompanies":
-        panelSubmit = editCompany()
-        
+        panelSubmit = editCompany();
+
         return (
           <>
             <InputText

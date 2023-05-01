@@ -7,3 +7,9 @@ export const setPhones = (phones) => {
   };
 };
 
+export const addPhones = (status) => {
+  return {
+    type: ActionTypes.ADD_PHONES,
+    payload: status,
+  };
+};

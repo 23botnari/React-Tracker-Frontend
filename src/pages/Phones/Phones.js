@@ -6,7 +6,7 @@ import {
   setPanelTitle,
   setPanelType,
 } from "../../redux/actions/sidePanelActions.js";
-import { setPhones } from "../../redux/actions/phonesActions.js";
+import {  setPhones } from "../../redux/actions/phonesActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -25,7 +25,7 @@ function Phones() {
   const msgs = useRef(null);
   const dispatch = useDispatch();
 
-  const { phones } = useSelector((state) => state.PhonesReducer);
+  const { phones,addPhones } = useSelector((state) => state.PhonesReducer);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -45,7 +45,7 @@ function Phones() {
 
   useEffect(() => {
     getPhones();
-  }, [refreshTable]);
+  }, [refreshTable,addPhones]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -139,16 +139,16 @@ function Phones() {
 
   const searchKeywords = () => {
     return (
-      <>
-        <span className="p-input-icon-left">
+      <div style={{ paddingLeft: "50px" }}>
+        <div className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
             value={globalFilterValue}
             onChange={onGlobalFilterChange}
             placeholder="Search keyword"
           />
-        </span>
-      </>
+        </div>
+      </div>
     );
   };
 
@@ -157,16 +157,16 @@ function Phones() {
       <div className="PhoneContent">
         <div className="PhoneHeader">
           <div className="PhoneHeader__text">
-            <h2>Numbers</h2>
+            <h2>Drivers</h2>
             <div className="PhoneHeader__button">
               <Button
-                label="Buy a number"
+                label="Add a Driver"
                 icon="pi pi-plus"
                 className="p-button-info mr-2"
                 onClick={() => {
                   dispatch(setIsOpen(true));
                   dispatch(setPanelType("addPhones"));
-                  dispatch(setPanelTitle("New Number"));
+                  dispatch(setPanelTitle("New Driver Contact"));
                 }}
               />
               <Button
@@ -191,8 +191,6 @@ function Phones() {
             "company",
             "driverName",
             "truckNumber",
-            "trailerNumber",
-            "mpMobileUserId",
           ]}
         >
           <Column
@@ -202,10 +200,9 @@ function Phones() {
           />
           <Column field="company" header="Company	" />
           <Column field="driverName" header="Driver name	" />
-          <Column field="truckNumber" header="Truck number	" />
-          <Column field="trailerNumber" header="Trailer number" />
-          <Column field="mpMobileUserId" header="MP mobile user id	" />
-          <Column body={actionButtons} header={searchKeywords}></Column>
+          <Column field="truckNumber" header="Truck number	" align={"center"} />
+          <Column body={actionButtons} header="Actions" align={"center"} />
+          <Column header={searchKeywords} align={"right"} />
         </DataTable>
       </div>
       <div className="message">

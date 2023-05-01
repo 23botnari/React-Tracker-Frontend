@@ -1,4 +1,4 @@
-import React, { useState,useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,16 +14,15 @@ import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
 import { formatDate } from "../../helpers/utils";
 
-
 const Companies = () => {
   const [refreshTable, setRefreshTable] = useState(false);
   const msgs = useRef(null);
-  
+
   const { companies, addCompany } = useSelector(
     (state) => state.CompaniesReducer
-    );
-    
-    const dispatch = useDispatch();
+  );
+
+  const dispatch = useDispatch();
 
   const getCompanies = () => {
     fetch("http://localhost:4000/companies")
@@ -52,6 +51,7 @@ const Companies = () => {
       ></i>
     );
   };
+
   const deleteMessage = () => {
     msgs.current.show({
       severity: "success",
@@ -60,6 +60,7 @@ const Companies = () => {
       life: 2400,
     });
   };
+
   const deleteCompany = async (_id) => {
     await fetch(`http://localhost:4000/companies/${_id}`, {
       method: "DELETE",
@@ -76,14 +77,14 @@ const Companies = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this company?")) {
       deleteCompany(id)
-      .then(() => {
-        setRefreshTable(!refreshTable);
-      })
-      .catch((error) =>{
-        console.log(error)
-      });
+        .then(() => {
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       setCompanies(companies.filter((company) => company._id !== id));
-       deleteMessage()
+      deleteMessage();
     }
   };
 
