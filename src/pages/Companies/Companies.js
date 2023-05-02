@@ -6,7 +6,8 @@ import {
   setPanelTitle,
   setPanelType,
 } from "../../redux/actions/sidePanelActions";
-import { setCompanies } from "../../redux/actions/companiesActions";
+
+import { setCompanies,setCompanyRowData,setRowData } from "../../redux/actions/companiesActions";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -98,13 +99,15 @@ const Companies = () => {
             dispatch(setIsOpen(true));
             dispatch(setPanelType("editCompanies"));
             dispatch(setPanelTitle("Edit Company"));
+            dispatch(setCompanyRowData(rowData))
           }}
-        ></Button>
+        />
+        
         <Button
           icon="pi pi-shopping-cart"
           className="p-button-rounded p-button-danger mr-2"
           onClick={() => handleDelete(rowData._id)}
-        />
+        />  
       </>
     );
   };

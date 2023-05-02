@@ -13,3 +13,8 @@ export const addPhones = (status) => {
     payload: status,
   };
 };
+
+export const setPhoneRowData = (phoneRowData) => ({
+  type: ActionTypes.SET_PHONE_ROW_DATA,
+  payload: phoneRowData,
+});

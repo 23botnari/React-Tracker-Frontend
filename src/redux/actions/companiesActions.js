@@ -13,3 +13,9 @@ export const addCompany = (status) => {
     payload: status,
   };
 };
+
+
+export const setCompanyRowData = (companyRowData) => ({
+  type: ActionTypes.SET_COMPANY_ROW_DATA,
+  payload: companyRowData,
+});

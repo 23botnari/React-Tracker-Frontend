@@ -6,7 +6,7 @@ import {
   setPanelTitle,
   setPanelType,
 } from "../../redux/actions/sidePanelActions.js";
-import {  setPhones } from "../../redux/actions/phonesActions.js";
+import {  setPhoneRowData, setPhones } from "../../redux/actions/phonesActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -37,9 +37,7 @@ function Phones() {
       })
       .then((data) => {
         dispatch(setPhones(data));
-        return [...Button(data || [])].map((d) => {
-          return d;
-        });
+        
       });
   };
 
@@ -104,6 +102,7 @@ function Phones() {
             dispatch(setIsOpen(true));
             dispatch(setPanelType("editPhones"));
             dispatch(setPanelTitle("Update Number"));
+            dispatch(setPhoneRowData(rowData))
           }}
         />
         <Button

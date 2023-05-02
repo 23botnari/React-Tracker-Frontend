@@ -1,21 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./SidePanel.scss";
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
-import { useSelector } from "react-redux";
+
 import {
   setDestinationPoint,
   setOriginPoint,
 } from "../../../redux/actions/dashboardActions";
+
 import {
   addCompany,
-  setCompanies,
+  editCompany,
+  setRowData,
 } from "../../../redux/actions/companiesActions";
+
 import { addPhones } from "../../../redux/actions/phonesActions";
 
 const SidePanelTemplate = ({
@@ -24,15 +27,16 @@ const SidePanelTemplate = ({
   panelTitle,
   panelSubmit,
 }) => {
-  const [companyName, setCompanyName] = useState("");
-  const [checked, setChecked] = useState(Boolean);
-
   const [phoneNumber, setPhoneNumber] = useState("");
   const [company, setCompany] = useState("");
   const [driverName, setDriverName] = useState("");
   const [truckNumber, setTruckNumber] = useState("");
 
-  const [values, setValues] = useState("");
+  const { companyRowData } = useSelector((state) => state.CompaniesReducer);
+  const { phoneRowData } = useSelector((state) => state.PhonesReducer);
+
+  const [companyName, setCompanyName] = useState("");
+  const [checked, setChecked] = useState(Boolean);
 
   const originRef = useRef();
   const destiantionRef = useRef();
@@ -79,6 +83,37 @@ const SidePanelTemplate = ({
       .then((data) => {
         dispatch(addPhones(true));
         dispatch(setIsOpen(false));
+        setPhoneNumber("");
+        setCompany("");
+        setDriverName("");
+        setTruckNumber("");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const editPhones = async (data) => {
+    await fetch(`http://localhost:4000/phones/${phoneRowData._id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+        company: company,
+        driverName: driverName,
+        truckNumber: truckNumber,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        dispatch(addPhones(true));
+        dispatch(setIsOpen(false));
+        setPhoneNumber("");
+        setCompany("");
+        setDriverName("");
+        setTruckNumber("");
       })
       .catch((error) => {
         console.error(error);
@@ -98,8 +133,10 @@ const SidePanelTemplate = ({
         return response.json();
       })
       .then((data) => {
-        dispatch(addCompany(true));
+        dispatch(addPhones(true));
         dispatch(setIsOpen(false));
+        setCompanyName("");
+        setChecked(false);
       })
       .catch((error) => {
         console.error(error);
@@ -107,10 +144,26 @@ const SidePanelTemplate = ({
   };
 
   const editCompany = async (data) => {
-    fetch("https://mockend.com/23botnari/teza/companies", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    await fetch(`http://localhost:4000/companies/${companyRowData._id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        companyName: companyName,
+        isActive: checked,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        dispatch(addCompany(true));
+        dispatch(setIsOpen(false));
+        setCompanyName("");
+        setChecked(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const Content = () => {
@@ -207,6 +260,45 @@ const SidePanelTemplate = ({
           </>
         );
 
+      case "editPhones":
+        panelSubmit = editPhones;
+        return (
+          <>
+            <InputText
+              id="phoneNumber"
+              type="text"
+              placeholder={`Phone : ${phoneRowData.phoneNumber}`}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full mb-3"
+            />
+            <InputText
+              id="company"
+              type="text"
+              placeholder={`Company : ${phoneRowData.company}`}
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="w-full mb-3"
+            />
+            <InputText
+              id="driverName"
+              type="text"
+              placeholder={`Driver : ${phoneRowData.driverName}`}
+              value={driverName}
+              onChange={(e) => setDriverName(e.target.value)}
+              className="w-full mb-3"
+            />
+            <InputText
+              id="truckNumber"
+              type="text"
+              placeholder={`Truck Number : ${phoneRowData.truckNumber}`}
+              value={truckNumber}
+              onChange={(e) => setTruckNumber(e.target.value)}
+              className="w-full mb-3"
+            />
+          </>
+        );
+
       case "ReadMessages":
         panelSubmit = !setIsOpen();
         return (
@@ -272,19 +364,17 @@ const SidePanelTemplate = ({
         );
 
       case "editCompanies":
-        panelSubmit = editCompany();
+        panelSubmit = editCompany;
 
         return (
           <>
             <InputText
-              id="company"
+              id="companyName"
               type="text"
-              placeholder="Company"
+              placeholder={`Name : ${companyRowData.companyName}`}
               className="w-full mb-3"
-              value={values.name}
-              onChange={(e) => {
-                setValues((prev) => ({ ...prev, name: e.target.value }));
-              }}
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
             />
 
             <div className="flex align-items-center">
@@ -292,7 +382,7 @@ const SidePanelTemplate = ({
                 id="checkIsActive"
                 onChange={(e) => setChecked(e.checked)}
                 checked={checked}
-                value={values.isActive}
+                value={checked}
                 className="mr-2"
               />
               <label htmlFor="checkIsActive">Is Active</label>
