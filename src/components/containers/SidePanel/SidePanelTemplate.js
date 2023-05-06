@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SidePanel.scss";
+import { useDispatch, useSelector } from "react-redux";
+
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
+
+import { Dropdown } from "primereact/dropdown";
+
+import { addPhones } from "../../../redux/actions/phonesActions";
 
 import {
   setDestinationPoint,
@@ -19,8 +24,6 @@ import {
   setRowData,
 } from "../../../redux/actions/companiesActions";
 
-import { addPhones } from "../../../redux/actions/phonesActions";
-
 const SidePanelTemplate = ({
   isActive,
   panelType,
@@ -31,26 +34,67 @@ const SidePanelTemplate = ({
   const [company, setCompany] = useState("");
   const [driverName, setDriverName] = useState("");
   const [truckNumber, setTruckNumber] = useState("");
+  const [companyNames, setCompanyNames] = useState([]);
 
   const { companyRowData } = useSelector((state) => state.CompaniesReducer);
   const { phoneRowData } = useSelector((state) => state.PhonesReducer);
-
+  const [trips, setTrips] = useState([]);
+  
   const [companyName, setCompanyName] = useState("");
   const [checked, setChecked] = useState(Boolean);
 
-  const originRef = useRef();
-  const destiantionRef = useRef();
   const dispatch = useDispatch();
+  const originRef = useRef();
+  const destinationRef = useRef();
 
-  const calculateNewRoute = () => {
+  useEffect(() => {
+    getCompany();
+    getTrips();
+  }, []);
+
+
+  const calculateNewRoute = async () => {
+    const startPoint = originRef.current.value;
+    const finalPoint = destinationRef.current.value;
+
+    await fetch("http://localhost:4000/routes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        originRef: startPoint,
+        destinationRef: finalPoint,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {})
+      .catch((error) => {
+        console.error(error);
+      });
     dispatch(setOriginPoint(originRef.current.value));
-    dispatch(setDestinationPoint(destiantionRef.current.value));
+    dispatch(setDestinationPoint(destinationRef.current.value));
   };
 
-  function clearRoute() {
+  const checkRoute = () => {
+    dispatch(setOriginPoint(originRef.current.value));
+    dispatch(setDestinationPoint(destinationRef.current.value));
+  };
+
+  const clearRoute = () => {
     dispatch(setOriginPoint((originRef.current.value = "")));
-    dispatch(setDestinationPoint((destiantionRef.current.value = "")));
-  }
+    dispatch(setDestinationPoint((destinationRef.current.value = "")));
+  };
+
+  const getTrips = async (data) => {
+    fetch("http://localhost:4000/routes")
+      .then((response) => response.json())
+      .then((data) => {
+        const trips = data.map((trips) => trips);
+        setTrips(trips);
+      })
+      .catch((error) => console.error(error));
+  };
 
   const createTrip = async (data) => {
     fetch("https://mockend.com/23botnari/teza/companies", {
@@ -119,7 +163,15 @@ const SidePanelTemplate = ({
         console.error(error);
       });
   };
-
+  const getCompany = async (data) => {
+    fetch("http://localhost:4000/companies")
+      .then((response) => response.json())
+      .then((data) => {
+        const options = data.map((company) => company.companyName);
+        setCompanyNames(options);
+      })
+      .catch((error) => console.error("Error fetching companies: ", error));
+  };
   const createCompany = async (data) => {
     await fetch("http://localhost:4000/companies", {
       method: "POST",
@@ -166,10 +218,36 @@ const SidePanelTemplate = ({
       });
   };
 
+
+  
   const Content = () => {
     switch (panelType) {
       case "Trips":
-        return <></>;
+        return (
+          <>
+            {trips.map((trip, index) => (
+              <div className="trips-container" key={index}>
+                <div
+                  className="trip"
+                  onClick={() => {
+                    dispatch(setOriginPoint(trip.originRef));
+                    dispatch(setDestinationPoint(trip.destinationRef));
+                  }}
+                >
+                  <div className="start">StartPoint: {trip.originRef}</div>
+                  <div className="destination">
+                    Destination: {trip.destinationRef}
+                  </div>
+                  <div className="driver">Driver: {trip.driverName}</div>
+                  <div className="company">Company: {trip.company}</div>
+                  <div className="num-drivers">
+                    Driver Number: {trip.driverNumber}{" "}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        );
 
       case "AddTrip":
         panelSubmit = calculateNewRoute;
@@ -189,35 +267,20 @@ const SidePanelTemplate = ({
                 id="finalPoint"
                 type="text"
                 placeholder="Final Point"
-                ref={destiantionRef}
+                ref={destinationRef}
                 className="w-full mb-3"
               />
             </Autocomplete>
-            <InputText
-              id="company"
-              type="text"
-              placeholder="Company"
-              className="w-full mb-3"
-            />
+
             <InputText
               id="driverName"
               type="text"
               placeholder="Driver name"
               className="w-full mb-3"
             />
-            <InputText
-              id="truckNumber"
-              type="text"
-              placeholder="Truck number"
-              className="w-full mb-3"
-            />
-            <InputText
-              id="trailerNumber"
-              type="text"
-              placeholder="Trailer number"
-              className="w-full mb-3"
-            />
+
             <Button onClick={clearRoute}>Clear</Button>
+            <Button onClick={checkRoute}>Check Route</Button>
           </>
         );
 
@@ -233,14 +296,15 @@ const SidePanelTemplate = ({
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="w-full mb-3"
             />
-            <InputText
-              id="company"
-              type="text"
-              placeholder="Company"
+
+            <Dropdown
               value={company}
-              onChange={(e) => setCompany(e.target.value)}
+              options={companyNames}
+              onChange={(e) => setCompany(e.value)}
+              placeholder="Company"
               className="w-full mb-3"
             />
+
             <InputText
               id="driverName"
               type="text"

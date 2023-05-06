@@ -20,7 +20,6 @@ const App = () => {
     return <Login setToken={setToken} />;
   }
   
-  console.log(token)
   return (
     <div className="basic-layout">
       <div className="basic_layout__sidemenu">

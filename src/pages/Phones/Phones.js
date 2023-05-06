@@ -6,7 +6,10 @@ import {
   setPanelTitle,
   setPanelType,
 } from "../../redux/actions/sidePanelActions.js";
-import {  setPhoneRowData, setPhones } from "../../redux/actions/phonesActions.js";
+import {
+  setPhoneRowData,
+  setPhones,
+} from "../../redux/actions/phonesActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -25,7 +28,7 @@ function Phones() {
   const msgs = useRef(null);
   const dispatch = useDispatch();
 
-  const { phones,addPhones } = useSelector((state) => state.PhonesReducer);
+  const { phones, addPhones } = useSelector((state) => state.PhonesReducer);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -37,13 +40,12 @@ function Phones() {
       })
       .then((data) => {
         dispatch(setPhones(data));
-        
       });
   };
 
   useEffect(() => {
     getPhones();
-  }, [refreshTable,addPhones]);
+  }, [refreshTable, addPhones]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -102,7 +104,7 @@ function Phones() {
             dispatch(setIsOpen(true));
             dispatch(setPanelType("editPhones"));
             dispatch(setPanelTitle("Update Number"));
-            dispatch(setPhoneRowData(rowData))
+            dispatch(setPhoneRowData(rowData));
           }}
         />
         <Button
