@@ -31,29 +31,31 @@ const SidePanelTemplate = ({
   panelSubmit,
 }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [company, setCompany] = useState("");
   const [driverName, setDriverName] = useState("");
+  const [drivers, setDrivers] = useState([]);
+  const [driversDetails, setDriversDetails] = useState([]);
   const [truckNumber, setTruckNumber] = useState("");
-  const [companyNames, setCompanyNames] = useState([]);
-
-  const { companyRowData } = useSelector((state) => state.CompaniesReducer);
   const { phoneRowData } = useSelector((state) => state.PhonesReducer);
-  const [trips, setTrips] = useState([]);
-  
+
+  const [company, setCompany] = useState("");
+  const [companyNames, setCompanyNames] = useState([]);
   const [companyName, setCompanyName] = useState("");
   const [checked, setChecked] = useState(Boolean);
+  const { companyRowData } = useSelector((state) => state.CompaniesReducer);
 
-  const dispatch = useDispatch();
+  const [trips, setTrips] = useState([]);
   const originRef = useRef();
   const destinationRef = useRef();
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getCompany();
     getTrips();
+    getCompany();
+    getDriver();
   }, []);
 
-
-  const calculateNewRoute = async () => {
+  const addTrip = async () => {
     const startPoint = originRef.current.value;
     const finalPoint = destinationRef.current.value;
 
@@ -63,6 +65,10 @@ const SidePanelTemplate = ({
       body: JSON.stringify({
         originRef: startPoint,
         destinationRef: finalPoint,
+        driverName: driverName,
+        phoneNumber: phoneNumber,
+        companyName: company,
+        truckNumber: truckNumber,
       }),
     })
       .then((response) => {
@@ -76,6 +82,37 @@ const SidePanelTemplate = ({
     dispatch(setDestinationPoint(destinationRef.current.value));
   };
 
+  const getDriver = async (data) => {
+    await fetch("http://localhost:4000/phones")
+      .then((response) => response.json())
+      .then((data) => {
+        const drivers = data.map((driver) => driver.driverName);
+        setDrivers(drivers);
+      })
+      .catch((error) => console.error("Error is:", error));
+  };
+  const getDriverDetails = async (driverName) => {
+    await fetch(`http://localhost:4000/phones?driverName=${driverName}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const driver = data.find((d) => d.driverName === driverName);
+        if (driver) {
+          setPhoneNumber(driver.phoneNumber);
+          setCompany(driver.company);
+          setTruckNumber(driver.truckNumber);
+        } else {
+          setPhoneNumber("");
+          setCompany("");
+          setTruckNumber("");
+        }
+      })
+      .catch((error) => console.error("Error is:", error));
+  };
+
+  const onDriverChange = (e) => {
+    setDriverName(e.value);
+    getDriverDetails(e.value);
+  };
   const checkRoute = () => {
     dispatch(setOriginPoint(originRef.current.value));
     dispatch(setDestinationPoint(destinationRef.current.value));
@@ -84,23 +121,6 @@ const SidePanelTemplate = ({
   const clearRoute = () => {
     dispatch(setOriginPoint((originRef.current.value = "")));
     dispatch(setDestinationPoint((destinationRef.current.value = "")));
-  };
-
-  const getTrips = async (data) => {
-    fetch("http://localhost:4000/routes")
-      .then((response) => response.json())
-      .then((data) => {
-        const trips = data.map((trips) => trips);
-        setTrips(trips);
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const createTrip = async (data) => {
-    fetch("https://mockend.com/23botnari/teza/companies", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
   };
 
   const createMessage = async (data) => {
@@ -163,15 +183,7 @@ const SidePanelTemplate = ({
         console.error(error);
       });
   };
-  const getCompany = async (data) => {
-    fetch("http://localhost:4000/companies")
-      .then((response) => response.json())
-      .then((data) => {
-        const options = data.map((company) => company.companyName);
-        setCompanyNames(options);
-      })
-      .catch((error) => console.error("Error fetching companies: ", error));
-  };
+
   const createCompany = async (data) => {
     await fetch("http://localhost:4000/companies", {
       method: "POST",
@@ -218,8 +230,26 @@ const SidePanelTemplate = ({
       });
   };
 
+  const getTrips = async (data) => {
+    await fetch("http://localhost:4000/routes")
+      .then((response) => response.json())
+      .then((data) => {
+        const trips = data.map((trips) => trips);
+        setTrips(trips);
+      })
+      .catch((error) => console.error(error));
+  };
 
-  
+  const getCompany = async (data) => {
+    await fetch("http://localhost:4000/companies")
+      .then((response) => response.json())
+      .then((data) => {
+        const companies = data.map((company) => company.companyName);
+        setCompanyNames(companies);
+      })
+      .catch((error) => console.error(error));
+  };
+
   const Content = () => {
     switch (panelType) {
       case "Trips":
@@ -234,14 +264,14 @@ const SidePanelTemplate = ({
                     dispatch(setDestinationPoint(trip.destinationRef));
                   }}
                 >
+                  <div className="company">Company: {trip.companyName}</div>
+                  <div className="driver">Driver: {trip.driverName}</div>
+                  <div className="num-drivers">
+                    Driver Number: {trip.phoneNumber}
+                  </div>
                   <div className="start">StartPoint: {trip.originRef}</div>
                   <div className="destination">
                     Destination: {trip.destinationRef}
-                  </div>
-                  <div className="driver">Driver: {trip.driverName}</div>
-                  <div className="company">Company: {trip.company}</div>
-                  <div className="num-drivers">
-                    Driver Number: {trip.driverNumber}{" "}
                   </div>
                 </div>
               </div>
@@ -250,7 +280,7 @@ const SidePanelTemplate = ({
         );
 
       case "AddTrip":
-        panelSubmit = calculateNewRoute;
+        panelSubmit = addTrip;
         return (
           <>
             <Autocomplete>
@@ -272,15 +302,22 @@ const SidePanelTemplate = ({
               />
             </Autocomplete>
 
-            <InputText
-              id="driverName"
-              type="text"
-              placeholder="Driver name"
+            <Dropdown
+              value={driverName}
+              options={drivers}
+              onChange={onDriverChange}
+              placeholder="Driver"
               className="w-full mb-3"
             />
 
+            <p>Phone number: {phoneNumber}</p>
+            <p>Company: {company}</p>
+            <p>Truck number: {truckNumber}</p>
+
             <Button onClick={clearRoute}>Clear</Button>
-            <Button onClick={checkRoute}>Check Route</Button>
+            <Button onClick={checkRoute} style={{ marginLeft: "20px" }}>
+              Check Route
+            </Button>
           </>
         );
 
