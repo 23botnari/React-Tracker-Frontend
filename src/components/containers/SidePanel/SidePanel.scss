@@ -1,33 +1,3 @@
-// .SidePanel {
-//   width: 0;
-//   position: fixed;
-//   z-index: 2;
-//   top: 0;
-
-//   height: 100%;
-//   background: #fff;
-
-//   &-active {
-//     width: 300px;
-//   }
-//   &-header {
-//     font-size: 20px;
-//     font-weight: bold;
-//     text-align: center;
-//     margin-bottom: 20px;
-//   }
-
-//   &-content {
-//     height: calc(100% - 80px);
-//     overflow-y: auto;
-//   }
-
-//   &-footer {
-//     font-size: 14px;
-//     text-align: center;
-//     margin-top: 20px;
-//   }
-// }
 .Panel {
   display: block;
   position: fixed;
@@ -38,6 +8,7 @@
   background-color: #fff;
   transition: all 0.5s ease;
   width: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
   &.active {
     width: 350px;
@@ -53,13 +24,30 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
   }
 
   &__content {
-    padding: 20px;
+    padding: 25px;
+    overflow-y: scroll;
+    height: 49.7em;
   }
+ &__content::-webkit-scrollbar {
+    width: 9px;
+    border-radius: 10px;
+  }
+  &__content::-webkit-scrollbar-thumb {
+    background-color: #0000002b;
+  border-radius: 10px;
+  }
+  &__content:hover::-webkit-scrollbar-thumb {
+    background-color: #2626278a;
 
+  }
   &__footer {
+    border-top: 1px solid #00000015;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: space-between;
     padding: 30px;
@@ -76,41 +64,55 @@
   padding: 10px;
   position: relative;
   box-shadow: #0000004d 0 1px 4px -1px;
-  &-details{
+  &-details {
     font-size: 12px;
     border-bottom: 1px solid #05010175;
     padding-bottom: 1vh;
   }
   &-text {
-    color:#050101;
+    color: #050101;
   }
 }
-.trips-container {
-  display: flex;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 10px;
-  cursor: pointer;
-}
-
 .trip {
-  width: 100%;
+  background-color: #eef2f9;
+  border-radius: 8px;
+  border: 1px solid #dce6f3;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-  padding: 10px;
-  margin-bottom: 10px;
-  
-}
+  margin-bottom: 16px;
+  padding: 16px;
+  transition: background-color 0.2s ease;
 
-.trip div {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 5px;
-}
+  &:hover {
+    background-color: #dce6f3c7;
+  }
 
+  .driver {
+    font-size: 17px;
+    font-weight: bold;
+    color: #003e6b;
+  }
+
+  .company,
+  .phone,
+  .truck,
+  .start,
+  .destination {
+    font-size: 13px;
+    color: #6d8ea0;
+  }
+
+  .start,
+  .truck,
+  .destination,
+  .phone,
+  .company {
+    margin-top: 8px;
+  }
+
+  .destination {
+    margin-bottom: 8px;
+  }
+}

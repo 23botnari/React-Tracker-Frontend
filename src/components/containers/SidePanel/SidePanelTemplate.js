@@ -33,7 +33,6 @@ const SidePanelTemplate = ({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [driverName, setDriverName] = useState("");
   const [drivers, setDrivers] = useState([]);
-  const [driversDetails, setDriversDetails] = useState([]);
   const [truckNumber, setTruckNumber] = useState("");
   const { phoneRowData } = useSelector((state) => state.PhonesReducer);
 
@@ -48,14 +47,18 @@ const SidePanelTemplate = ({
   const destinationRef = useRef();
 
   const dispatch = useDispatch();
+  const [refreshTable, setRefreshTable] = useState(false);
 
   useEffect(() => {
-    getTrips();
     getCompany();
     getDriver();
   }, []);
-
+  useEffect(() => {
+    getTrips();
+  }, [refreshTable]);
   const addTrip = async () => {
+    setRefreshTable(!refreshTable);
+
     const startPoint = originRef.current.value;
     const finalPoint = destinationRef.current.value;
 
@@ -74,9 +77,18 @@ const SidePanelTemplate = ({
       .then((response) => {
         return response.json();
       })
-      .then((data) => {})
+      .then((data) => {
+        dispatch(setIsOpen(false));
+        dispatch(setOriginPoint(''));
+        dispatch(setDestinationPoint(''));
+        onDriverChange("");
+        dispatch(setOriginPoint(""));
+        dispatch(setDestinationPoint(""));
+        window.alert("New Route was Added.")
+      })
       .catch((error) => {
         console.error(error);
+        
       });
     dispatch(setOriginPoint(originRef.current.value));
     dispatch(setDestinationPoint(destinationRef.current.value));
@@ -113,6 +125,7 @@ const SidePanelTemplate = ({
     setDriverName(e.value);
     getDriverDetails(e.value);
   };
+
   const checkRoute = () => {
     dispatch(setOriginPoint(originRef.current.value));
     dispatch(setDestinationPoint(destinationRef.current.value));
@@ -121,6 +134,7 @@ const SidePanelTemplate = ({
   const clearRoute = () => {
     dispatch(setOriginPoint((originRef.current.value = "")));
     dispatch(setDestinationPoint((destinationRef.current.value = "")));
+    onDriverChange("");
   };
 
   const createMessage = async (data) => {
@@ -264,14 +278,38 @@ const SidePanelTemplate = ({
                     dispatch(setDestinationPoint(trip.destinationRef));
                   }}
                 >
-                  <div className="company">Company: {trip.companyName}</div>
-                  <div className="driver">Driver: {trip.driverName}</div>
-                  <div className="num-drivers">
-                    Driver Number: {trip.phoneNumber}
+                  <div className="driver"> Driver: {trip.driverName}</div>
+                  <div className="company">
+                    <i className="pi pi-building"></i> Company:{" "}
+                    {trip.companyName}
                   </div>
-                  <div className="start">StartPoint: {trip.originRef}</div>
+                  <div className="phone">
+                    <i className="pi pi-phone"></i> Phone: {trip.phoneNumber}
+                  </div>
+                  <div className="truck">
+                    <i className="pi pi-car"></i> Truck Number:{" "}
+                    {trip.truckNumber}
+                  </div>
+                  <div className="start">
+                    <i className="pi pi-flag"></i> Start Point: {trip.originRef}
+                  </div>
                   <div className="destination">
-                    Destination: {trip.destinationRef}
+                    <i className="pi pi-flag-fill"></i> End Point:{" "}
+                    {trip.destinationRef}
+                  </div>
+                  <div className="buttons">
+                    <Button
+                      icon="pi pi-pencil"
+                      className="p-button-rounded p-button-info ml-6 mr-1 mt-1"
+                    />
+                    <Button
+                      icon="pi pi-envelope"
+                      className="p-button-rounded p-button-warning mr-1"
+                    />
+                    <Button
+                      icon="pi pi-trash"
+                      className="p-button-rounded p-button-danger left-auto"
+                    />
                   </div>
                 </div>
               </div>
