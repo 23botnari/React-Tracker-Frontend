@@ -7,9 +7,9 @@ import {
   setPanelType,
 } from "../../redux/actions/sidePanelActions.js";
 import {
-  setPhoneRowData,
-  setPhones,
-} from "../../redux/actions/phonesActions.js";
+  setDriverRowData,
+  setDrivers,
+} from "../../redux/actions/driversActions.js";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -19,33 +19,33 @@ import { Messages } from "primereact/messages";
 
 import { FilterMatchMode } from "primereact/api";
 
-import "./Phones.scss";
+import "./Drivers.scss";
 
-function Phones() {
+function Drivers() {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [refreshTable, setRefreshTable] = useState(false);
 
   const msgs = useRef(null);
   const dispatch = useDispatch();
 
-  const { phones, addPhones } = useSelector((state) => state.PhonesReducer);
+  const { drivers, addDrivers } = useSelector((state) => state.DriversReducer);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  const getPhones = async () => {
-    fetch("http://localhost:4000/phones")
+  const getDrivers = async () => {
+    fetch("http://localhost:4000/drivers")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        dispatch(setPhones(data));
+        dispatch(setDrivers(data));
       });
   };
 
   useEffect(() => {
-    getPhones();
-  }, [refreshTable, addPhones]);
+    getDrivers();
+  }, [refreshTable, addDrivers]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -66,8 +66,8 @@ function Phones() {
     });
   };
 
-  const deletePhone = async (_id) => {
-    await fetch(`http://localhost:4000/phones/${_id}`, {
+  const deleteDriver = async (_id) => {
+    await fetch(`http://localhost:4000/drivers/${_id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -82,14 +82,14 @@ function Phones() {
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this Driver?")) {
-      deletePhone(id)
+      deleteDriver(id)
         .then(() => {
           setRefreshTable(!refreshTable);
         })
         .catch((error) => {
           console.log(error);
         });
-      setPhones(phones.filter((phone) => phone._id !== id));
+      setDrivers(drivers.filter((Driver) => Driver._id !== id));
       deleteMessage();
     }
   };
@@ -102,9 +102,9 @@ function Phones() {
           className="p-button-rounded p-button-info mr-2"
           onClick={() => {
             dispatch(setIsOpen(true));
-            dispatch(setPanelType("editPhones"));
+            dispatch(setPanelType("editDrivers"));
             dispatch(setPanelTitle("Update Number"));
-            dispatch(setPhoneRowData(rowData));
+            dispatch(setDriverRowData(rowData));
           }}
         />
         <Button
@@ -155,19 +155,19 @@ function Phones() {
 
   return (
     <>
-      <div className="PhoneContent">
-        <div className="PhoneHeader">
-          <div className="PhoneHeader__text">
+      <div className="DriverContent">
+        <div className="DriverHeader">
+          <div className="DriverHeader__text">
             <h2>Drivers</h2>
-            <div className="PhoneHeader__button">
+            <div className="DriverHeader__button">
               <Button
                 label="Add a Driver"
                 icon="pi pi-plus"
                 className="p-button-info mr-2"
                 onClick={() => {
                   dispatch(setIsOpen(true));
-                  dispatch(setPanelType("addPhones"));
-                  dispatch(setPanelTitle("New Driver Contact"));
+                  dispatch(setPanelType("addDriver"));
+                  dispatch(setPanelTitle("New Driver"));
                 }}
               />
               <Button
@@ -180,7 +180,7 @@ function Phones() {
           </div>
         </div>
         <DataTable
-          value={phones}
+          value={drivers}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           paginator
           rows={7}
@@ -188,14 +188,14 @@ function Phones() {
           dataKey="id"
           filters={filters}
           globalFilterFields={[
-            "phoneNumber",
+            "driverNumber",
             "company",
             "driverName",
             "truckNumber",
           ]}
         >
           <Column
-            field="phoneNumber"
+            field="driverNumber"
             header="Phone"
             style={{ width: "200px" }}
           />
@@ -212,4 +212,4 @@ function Phones() {
     </>
   );
 }
-export default Phones;
+export default Drivers;

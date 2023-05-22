@@ -11,7 +11,7 @@ import { setIsOpen } from "../../../redux/actions/sidePanelActions";
 
 import { Dropdown } from "primereact/dropdown";
 
-import { addPhones } from "../../../redux/actions/phonesActions";
+import { addDrivers } from "../../../redux/actions/driversActions";
 
 import {
   setDestinationPoint,
@@ -30,11 +30,11 @@ const SidePanelTemplate = ({
   panelTitle,
   panelSubmit,
 }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [driverNumber, setDriverNumber] = useState("");
   const [driverName, setDriverName] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [truckNumber, setTruckNumber] = useState("");
-  const { phoneRowData } = useSelector((state) => state.PhonesReducer);
+  const { driverRowData } = useSelector((state) => state.DriversReducer);
 
   const [company, setCompany] = useState("");
   const [companyNames, setCompanyNames] = useState([]);
@@ -69,7 +69,7 @@ const SidePanelTemplate = ({
         originRef: startPoint,
         destinationRef: finalPoint,
         driverName: driverName,
-        phoneNumber: phoneNumber,
+        driverNumber: driverNumber,
         companyName: company,
         truckNumber: truckNumber,
       }),
@@ -95,7 +95,7 @@ const SidePanelTemplate = ({
   };
 
   const getDriver = async (data) => {
-    await fetch("http://localhost:4000/phones")
+    await fetch("http://localhost:4000/drivers")
       .then((response) => response.json())
       .then((data) => {
         const drivers = data.map((driver) => driver.driverName);
@@ -104,16 +104,16 @@ const SidePanelTemplate = ({
       .catch((error) => console.error("Error is:", error));
   };
   const getDriverDetails = async (driverName) => {
-    await fetch(`http://localhost:4000/phones?driverName=${driverName}`)
+    await fetch(`http://localhost:4000/drivers?driverName=${driverName}`)
       .then((response) => response.json())
       .then((data) => {
         const driver = data.find((d) => d.driverName === driverName);
         if (driver) {
-          setPhoneNumber(driver.phoneNumber);
+          setDriverNumber(driver.driverNumber);
           setCompany(driver.company);
           setTruckNumber(driver.truckNumber);
         } else {
-          setPhoneNumber("");
+          setDriverNumber("");
           setCompany("");
           setTruckNumber("");
         }
@@ -144,12 +144,12 @@ const SidePanelTemplate = ({
     });
   };
 
-  const createPhones = async (data) => {
-    await fetch("http://localhost:4000/phones/", {
+  const createDrivers = async (data) => {
+    await fetch("http://localhost:4000/drivers/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        phoneNumber: phoneNumber,
+        driverNumber: driverNumber,
         company: company,
         driverName: driverName,
         truckNumber: truckNumber,
@@ -159,9 +159,9 @@ const SidePanelTemplate = ({
         return response.json();
       })
       .then((data) => {
-        dispatch(addPhones(true));
+        dispatch(addDrivers(true));
         dispatch(setIsOpen(false));
-        setPhoneNumber("");
+        setDriverNumber("");
         setCompany("");
         setDriverName("");
         setTruckNumber("");
@@ -171,12 +171,12 @@ const SidePanelTemplate = ({
       });
   };
 
-  const editPhones = async (data) => {
-    await fetch(`http://localhost:4000/phones/${phoneRowData._id}`, {
+  const editDrivers = async (data) => {
+    await fetch(`http://localhost:4000/drivers/${driverRowData._id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        phoneNumber: phoneNumber,
+        driverNumber: driverNumber,
         company: company,
         driverName: driverName,
         truckNumber: truckNumber,
@@ -186,9 +186,9 @@ const SidePanelTemplate = ({
         return response.json();
       })
       .then((data) => {
-        dispatch(addPhones(true));
+        dispatch(addDrivers(true));
         dispatch(setIsOpen(false));
-        setPhoneNumber("");
+        setDriverNumber("");
         setCompany("");
         setDriverName("");
         setTruckNumber("");
@@ -211,7 +211,7 @@ const SidePanelTemplate = ({
         return response.json();
       })
       .then((data) => {
-        dispatch(addPhones(true));
+        dispatch(addDrivers(true));
         dispatch(setIsOpen(false));
         setCompanyName("");
         setChecked(false);
@@ -284,7 +284,7 @@ const SidePanelTemplate = ({
                     {trip.companyName}
                   </div>
                   <div className="phone">
-                    <i className="pi pi-phone"></i> Phone: {trip.phoneNumber}
+                    <i className="pi pi-phone"></i> Phone: {trip.driverNumber}
                   </div>
                   <div className="truck">
                     <i className="pi pi-car"></i> Truck Number:{" "}
@@ -348,7 +348,7 @@ const SidePanelTemplate = ({
               className="w-full mb-3"
             />
 
-            <p>Phone number: {phoneNumber}</p>
+            <p>Phone number: {driverNumber}</p>
             <p>Company: {company}</p>
             <p>Truck number: {truckNumber}</p>
 
@@ -359,16 +359,16 @@ const SidePanelTemplate = ({
           </>
         );
 
-      case "addPhones":
-        panelSubmit = createPhones;
+      case "addDriver":
+        panelSubmit = createDrivers;
         return (
           <>
             <InputText
-              id="phoneNumber"
+              id="driverNumber"
               type="text"
               placeholder="Phone"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={driverNumber}
+              onChange={(e) => setDriverNumber(e.target.value)}
               className="w-full mb-3"
             />
 
@@ -399,22 +399,22 @@ const SidePanelTemplate = ({
           </>
         );
 
-      case "editPhones":
-        panelSubmit = editPhones;
+      case "editDrivers":
+        panelSubmit = editDrivers;
         return (
           <>
             <InputText
-              id="phoneNumber"
+              id="driverNumber"
               type="text"
-              placeholder={`Phone : ${phoneRowData.phoneNumber}`}
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder={`Phone : ${driverRowData.driverNumber}`}
+              value={driverNumber}
+              onChange={(e) => setDriverNumber(e.target.value)}
               className="w-full mb-3"
             />
             <InputText
               id="company"
               type="text"
-              placeholder={`Company : ${phoneRowData.company}`}
+              placeholder={`Company : ${driverRowData.company}`}
               value={company}
               onChange={(e) => setCompany(e.target.value)}
               className="w-full mb-3"
@@ -422,7 +422,7 @@ const SidePanelTemplate = ({
             <InputText
               id="driverName"
               type="text"
-              placeholder={`Driver : ${phoneRowData.driverName}`}
+              placeholder={`Driver : ${driverRowData.driverName}`}
               value={driverName}
               onChange={(e) => setDriverName(e.target.value)}
               className="w-full mb-3"
@@ -430,7 +430,7 @@ const SidePanelTemplate = ({
             <InputText
               id="truckNumber"
               type="text"
-              placeholder={`Truck Number : ${phoneRowData.truckNumber}`}
+              placeholder={`Truck Number : ${driverRowData.truckNumber}`}
               value={truckNumber}
               onChange={(e) => setTruckNumber(e.target.value)}
               className="w-full mb-3"
@@ -538,7 +538,7 @@ const SidePanelTemplate = ({
         <div className="SidePanel__header">
           <div className="SidePanel__title">
             <h3>{panelTitle}</h3>
-            {/* {panelType === "Phones" ? "New Number" : "New Company"} */}
+            {/* {panelType === "Drivers" ? "New Number" : "New Company"} */}
           </div>
         </div>
         <div className="SidePanel__content">{Content(panelType)}</div>

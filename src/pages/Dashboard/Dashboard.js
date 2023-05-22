@@ -26,7 +26,6 @@ function Dashboard() {
   async function calculateRoute(originPoint, destinationPoint) {
     if (originPoint === "" || destinationPoint === "") {
       return setDirectionsResponse(null);
-      //Message-Primereact error input
     }
     // eslint-disable-next-line no-undef
     const directionsService = new google.maps.DirectionsService();

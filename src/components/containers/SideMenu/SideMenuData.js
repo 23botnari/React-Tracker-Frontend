@@ -13,9 +13,9 @@ export const SideMenuData = [
     icon: "pi pi-plus-circle",
   },
   {
-    label: "Phones",
-    icon: "pi pi-phone",
-    link: "/phones",
+    label: "Drivers",
+    icon: "pi pi-user",
+    link: "/drivers",
   },
   {
     label: "Companies",

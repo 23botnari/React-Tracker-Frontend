@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./SideMenu.scss";
 import Logo from "../../../assets/logo192.png";
 import { SideMenuData } from "./SideMenuData";
@@ -14,17 +14,60 @@ import useToken from "../Login/useToken";
 const SideMenu = () => {
   const { isExpanded } = useSelector((state) => state.SideMenuReducer);
   const dispatch = useDispatch();
-  const { setToken } = useToken();
 
-  const userRole = "driver"; 
+  const { setToken, getToken } = useToken();
+  const [username, setUsername] = useState("");
+
+  const [userRole, setUserRole] = useState("");
 
   const refreshPage = () => {
     document.location.reload(false);
   };
 
+  useEffect(() => {
+    fetchUsername();
+    fetchUserRole();
+  }, []);
+
+  const fetchUserRole = async () => {
+    try {
+      const token = getToken(); // Retrieve the authentication token from wherever you store it
+      const response = await fetch("http://localhost:4000/auth/role", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setUserRole(data.role);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchUsername = async () => {
+    try {
+      const token = getToken();
+      const response = await fetch("http://localhost:4000/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setUsername(data.name);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderMenuItems = () => {
     return SideMenuData.map((val, key) => {
-      if (userRole === "operator" || (userRole === "driver" && val.label !== "Companies" && val.label !== "Add Trip"&& val.label !== "Phones")) {
+      if (
+        userRole === "operator" ||
+        (userRole === "driver" &&
+          val.label !== "Companies" &&
+          val.label !== "Add Trip" &&
+          val.label !== "Drivers")
+      ) {
         return (
           <li
             key={key}
@@ -81,7 +124,9 @@ const SideMenu = () => {
           <img alt="Logo" src={Logo} width="55px" />
           <div className="SideMenu__Title">React Tracker</div>
         </div>
-
+        <div className="SideMenu__Welcome">
+          Welcome, <span style={{fontWeight:"bold"}}>{username}</span>
+        </div>
         <ul className="SideMenu__List">{renderMenuItems()}</ul>
 
         <div
