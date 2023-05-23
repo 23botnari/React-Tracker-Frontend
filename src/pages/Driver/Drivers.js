@@ -191,6 +191,7 @@ function Drivers() {
             "driverNumber",
             "company",
             "driverName",
+            "driverSurname",  
             "truckNumber",
           ]}
         >
@@ -200,7 +201,10 @@ function Drivers() {
             style={{ width: "200px" }}
           />
           <Column field="company" header="Company	" />
-          <Column field="driverName" header="Driver name	" />
+          <Column
+            field={(driver) => driver.driverName + " " + driver.driverSurname}
+            header="Driver"
+          />
           <Column field="truckNumber" header="Truck number	" align={"center"} />
           <Column body={actionButtons} header="Actions" align={"center"} />
           <Column header={searchKeywords} align={"right"} />

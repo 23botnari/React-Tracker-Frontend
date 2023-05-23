@@ -18,11 +18,7 @@ import {
   setOriginPoint,
 } from "../../../redux/actions/dashboardActions";
 
-import {
-  addCompany,
-  editCompany,
-  setRowData,
-} from "../../../redux/actions/companiesActions";
+import { addCompany } from "../../../redux/actions/companiesActions";
 
 const SidePanelTemplate = ({
   isActive,
@@ -32,6 +28,8 @@ const SidePanelTemplate = ({
 }) => {
   const [driverNumber, setDriverNumber] = useState("");
   const [driverName, setDriverName] = useState("");
+  const [driverSurname, setDriverSurname] = useState("");
+  const [driverFullname, setDriverFullname] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [truckNumber, setTruckNumber] = useState("");
   const { driverRowData } = useSelector((state) => state.DriversReducer);
@@ -53,10 +51,12 @@ const SidePanelTemplate = ({
     getCompany();
     getDriver();
   }, []);
+
   useEffect(() => {
     getTrips();
   }, [refreshTable]);
-  const addTrip = async () => {
+
+  const addTrip = async (data) => {
     setRefreshTable(!refreshTable);
 
     const startPoint = originRef.current.value;
@@ -69,6 +69,7 @@ const SidePanelTemplate = ({
         originRef: startPoint,
         destinationRef: finalPoint,
         driverName: driverName,
+        driverSurname: driverSurname,
         driverNumber: driverNumber,
         companyName: company,
         truckNumber: truckNumber,
@@ -79,16 +80,15 @@ const SidePanelTemplate = ({
       })
       .then((data) => {
         dispatch(setIsOpen(false));
-        dispatch(setOriginPoint(''));
-        dispatch(setDestinationPoint(''));
+        dispatch(setOriginPoint(""));
+        dispatch(setDestinationPoint(""));
         onDriverChange("");
         dispatch(setOriginPoint(""));
         dispatch(setDestinationPoint(""));
-        window.alert("New Route was Added.")
+        window.alert("New Route was Added.");
       })
       .catch((error) => {
         console.error(error);
-        
       });
     dispatch(setOriginPoint(originRef.current.value));
     dispatch(setDestinationPoint(destinationRef.current.value));
@@ -98,21 +98,33 @@ const SidePanelTemplate = ({
     await fetch("http://localhost:4000/drivers")
       .then((response) => response.json())
       .then((data) => {
-        const drivers = data.map((driver) => driver.driverName);
+        const drivers = data.map((driver) => {
+          return {
+            label: `${driver.driverName} ${driver.driverSurname}`,
+            value: driver._id, // Assuming the driver ID field is named "_id"
+            driverName: driver.driverName,
+            driverSurname: driver.driverSurname,
+          };
+        });
         setDrivers(drivers);
+        console.log(drivers);
       })
       .catch((error) => console.error("Error is:", error));
   };
-  const getDriverDetails = async (driverName) => {
-    await fetch(`http://localhost:4000/drivers?driverName=${driverName}`)
+  const getDriverDetails = async (driverId) => {
+    await fetch(`http://localhost:4000/drivers/${driverId}`)
       .then((response) => response.json())
       .then((data) => {
-        const driver = data.find((d) => d.driverName === driverName);
+        const driver = data;
         if (driver) {
+          setDriverName(driver.driverName);
+          setDriverSurname(driver.driverSurname);
           setDriverNumber(driver.driverNumber);
           setCompany(driver.company);
           setTruckNumber(driver.truckNumber);
         } else {
+          setDriverName("");
+          setDriverSurname("");
           setDriverNumber("");
           setCompany("");
           setTruckNumber("");
@@ -121,9 +133,9 @@ const SidePanelTemplate = ({
       .catch((error) => console.error("Error is:", error));
   };
 
-  const onDriverChange = (e) => {
-    setDriverName(e.value);
-    getDriverDetails(e.value);
+  const onDriverChange = (selectedDriver) => {
+    setDriverFullname(selectedDriver.value); // Set driver name based on the label property
+    getDriverDetails(selectedDriver.value);
   };
 
   const checkRoute = () => {
@@ -152,6 +164,7 @@ const SidePanelTemplate = ({
         driverNumber: driverNumber,
         company: company,
         driverName: driverName,
+        driverSurname: driverSurname,
         truckNumber: truckNumber,
       }),
     })
@@ -164,6 +177,7 @@ const SidePanelTemplate = ({
         setDriverNumber("");
         setCompany("");
         setDriverName("");
+        setDriverSurname("");
         setTruckNumber("");
       })
       .catch((error) => {
@@ -179,6 +193,7 @@ const SidePanelTemplate = ({
         driverNumber: driverNumber,
         company: company,
         driverName: driverName,
+        driverSurname: driverSurname,
         truckNumber: truckNumber,
       }),
     })
@@ -191,6 +206,7 @@ const SidePanelTemplate = ({
         setDriverNumber("");
         setCompany("");
         setDriverName("");
+        setDriverSurname("");
         setTruckNumber("");
       })
       .catch((error) => {
@@ -278,7 +294,7 @@ const SidePanelTemplate = ({
                     dispatch(setDestinationPoint(trip.destinationRef));
                   }}
                 >
-                  <div className="driver"> Driver: {trip.driverName}</div>
+                  <div className="driver"> Driver: {trip.driverName +" " + trip.driverSurname}</div>
                   <div className="company">
                     <i className="pi pi-building"></i> Company:{" "}
                     {trip.companyName}
@@ -341,7 +357,7 @@ const SidePanelTemplate = ({
             </Autocomplete>
 
             <Dropdown
-              value={driverName}
+              value={driverFullname}
               options={drivers}
               onChange={onDriverChange}
               placeholder="Driver"
@@ -388,6 +404,16 @@ const SidePanelTemplate = ({
               onChange={(e) => setDriverName(e.target.value)}
               className="w-full mb-3"
             />
+
+            <InputText
+              id="driverSurname"
+              type="text"
+              placeholder="Driver Surname"
+              value={driverSurname}
+              onChange={(e) => setDriverSurname(e.target.value)}
+              className="w-full mb-3"
+            />
+
             <InputText
               id="truckNumber"
               type="text"
@@ -425,6 +451,14 @@ const SidePanelTemplate = ({
               placeholder={`Driver : ${driverRowData.driverName}`}
               value={driverName}
               onChange={(e) => setDriverName(e.target.value)}
+              className="w-full mb-3"
+            />
+            <InputText
+              id="driverSurname"
+              type="text"
+              placeholder={`Driver : ${driverRowData.driverSurname}`}
+              value={driverSurname}
+              onChange={(e) => setDriverSurname(e.target.value)}
               className="w-full mb-3"
             />
             <InputText
