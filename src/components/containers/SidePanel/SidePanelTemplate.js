@@ -8,8 +8,11 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
+import { Messages } from "primereact/messages";
 
 import { Dropdown } from "primereact/dropdown";
+import useToken from "../Login/useToken";
+import jwt_decode from "jwt-decode";
 
 import { addDrivers } from "../../../redux/actions/driversActions";
 
@@ -26,30 +29,37 @@ const SidePanelTemplate = ({
   panelTitle,
   panelSubmit,
 }) => {
+  const [driverId, setDriverId] = useState("");
   const [driverNumber, setDriverNumber] = useState("");
   const [driverName, setDriverName] = useState("");
   const [driverSurname, setDriverSurname] = useState("");
   const [driverFullname, setDriverFullname] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [truckNumber, setTruckNumber] = useState("");
-  const { driverRowData } = useSelector((state) => state.DriversReducer);
 
   const [company, setCompany] = useState("");
   const [companyNames, setCompanyNames] = useState([]);
   const [companyName, setCompanyName] = useState("");
   const [checked, setChecked] = useState(Boolean);
-  const { companyRowData } = useSelector((state) => state.CompaniesReducer);
 
   const [trips, setTrips] = useState([]);
   const originRef = useRef();
   const destinationRef = useRef();
 
-  const dispatch = useDispatch();
+  const { driverRowData } = useSelector((state) => state.DriversReducer);
+  const { companyRowData } = useSelector((state) => state.CompaniesReducer);
+
   const [refreshTable, setRefreshTable] = useState(false);
+  const [displayButtons, setDisplayButtons] = useState(false);
+
+  const { setToken, getToken } = useToken();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getCompany();
     getDriver();
+    buttons();
+    getTrips()
   }, []);
 
   useEffect(() => {
@@ -57,41 +67,64 @@ const SidePanelTemplate = ({
   }, [refreshTable]);
 
   const addTrip = async (data) => {
-    setRefreshTable(!refreshTable);
+    try {
+      setRefreshTable(!refreshTable);
 
-    const startPoint = originRef.current.value;
-    const finalPoint = destinationRef.current.value;
+      const startPoint = originRef.current.value;
+      const finalPoint = destinationRef.current.value;
 
-    await fetch("http://localhost:4000/routes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        originRef: startPoint,
-        destinationRef: finalPoint,
-        driverName: driverName,
-        driverSurname: driverSurname,
-        driverNumber: driverNumber,
-        companyName: company,
-        truckNumber: truckNumber,
-      }),
-    })
-      .then((response) => {
-        return response.json();
+      const name = driverName + " " + driverSurname;
+      const driverUser = await fetchUserByName(name);
+      const userId = driverUser._id;
+      console.log(userId);
+
+      await fetch("http://localhost:4000/routes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          originRef: startPoint,
+          destinationRef: finalPoint,
+          driverId: userId,
+          driverName: driverName,
+          driverSurname: driverSurname,
+          driverNumber: driverNumber,
+          companyName: company,
+          truckNumber: truckNumber,
+        }),
       })
-      .then((data) => {
-        dispatch(setIsOpen(false));
-        dispatch(setOriginPoint(""));
-        dispatch(setDestinationPoint(""));
-        onDriverChange("");
-        dispatch(setOriginPoint(""));
-        dispatch(setDestinationPoint(""));
-        window.alert("New Route was Added.");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    dispatch(setOriginPoint(originRef.current.value));
-    dispatch(setDestinationPoint(destinationRef.current.value));
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          dispatch(setIsOpen(false));
+          dispatch(setOriginPoint(""));
+          dispatch(setDestinationPoint(""));
+          onDriverChange("");
+          dispatch(setOriginPoint(""));
+          dispatch(setDestinationPoint(""));
+          getTrips();
+          window.alert("New Route was Added.");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      dispatch(setOriginPoint(originRef.current.value));
+      dispatch(setDestinationPoint(destinationRef.current.value));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserByName = async (name) => {
+    try {
+      const response = await fetch(`http://localhost:4000/users?name=${name}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   const getDriver = async (data) => {
@@ -107,7 +140,6 @@ const SidePanelTemplate = ({
           };
         });
         setDrivers(drivers);
-        console.log(drivers);
       })
       .catch((error) => console.error("Error is:", error));
   };
@@ -134,7 +166,8 @@ const SidePanelTemplate = ({
   };
 
   const onDriverChange = (selectedDriver) => {
-    setDriverFullname(selectedDriver.value); // Set driver name based on the label property
+    setDriverFullname(selectedDriver.value);
+    setDriverId(selectedDriver.value);
     getDriverDetails(selectedDriver.value);
   };
 
@@ -260,14 +293,49 @@ const SidePanelTemplate = ({
       });
   };
 
-  const getTrips = async (data) => {
-    await fetch("http://localhost:4000/routes")
-      .then((response) => response.json())
-      .then((data) => {
-        const trips = data.map((trips) => trips);
-        setTrips(trips);
-      })
-      .catch((error) => console.error(error));
+  const getTrips = async () => {
+    const token = getToken();
+    const decodedToken = jwt_decode(token);
+    const userId = decodedToken._id;
+    const userRole = await fetchUserRole(token);
+
+    try {
+      const url =
+        userRole === "driver"
+          ? `http://localhost:4000/routes/${userId}`
+          : "http://localhost:4000/routes";
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+
+      const filteredTrips =
+        userRole === "driver"
+          ? data.filter((trip) => trip.driverId === userId)
+          : data;
+
+      setTrips(filteredTrips);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserRole = async (token) => {
+    try {
+      const response = await fetch("http://localhost:4000/auth/role", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      return data.role;
+    } catch (error) {
+      console.log(error);
+      return "";
+    }
   };
 
   const getCompany = async (data) => {
@@ -278,6 +346,49 @@ const SidePanelTemplate = ({
         setCompanyNames(companies);
       })
       .catch((error) => console.error(error));
+  };
+
+  const buttons = async () => {
+    try {
+      const token = getToken();
+      const userRole = await fetchUserRole(token);
+      if (userRole === "operator") {
+        setDisplayButtons(true);
+      } else {
+        setDisplayButtons(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteTrip = async (tripId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/routes/${tripId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        getTrips();
+      } else {
+        throw new Error("Failed to delete trip.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    tripDeleted();
+  };
+  const msg = useRef(null);
+
+  const tripDeleted = () => {
+    if (msg.current) {
+      msg.current.show({
+        severity: "success",
+        summary: "Trip was deleted successfully.",
+        closable: false,
+        life: 2400,
+      });
+    }
   };
 
   const Content = () => {
@@ -294,7 +405,10 @@ const SidePanelTemplate = ({
                     dispatch(setDestinationPoint(trip.destinationRef));
                   }}
                 >
-                  <div className="driver"> Driver: {trip.driverName +" " + trip.driverSurname}</div>
+                  <div className="driver">
+                    {" "}
+                    Driver: {trip.driverName + " " + trip.driverSurname}
+                  </div>
                   <div className="company">
                     <i className="pi pi-building"></i> Company:{" "}
                     {trip.companyName}
@@ -313,19 +427,22 @@ const SidePanelTemplate = ({
                     <i className="pi pi-flag-fill"></i> End Point:{" "}
                     {trip.destinationRef}
                   </div>
+
                   <div className="buttons">
-                    <Button
-                      icon="pi pi-pencil"
-                      className="p-button-rounded p-button-info ml-6 mr-1 mt-1"
-                    />
-                    <Button
-                      icon="pi pi-envelope"
-                      className="p-button-rounded p-button-warning mr-1"
-                    />
-                    <Button
-                      icon="pi pi-trash"
-                      className="p-button-rounded p-button-danger left-auto"
-                    />
+                    {" "}
+                    {displayButtons && (
+                      <>
+                        <Button
+                          icon="pi pi-pencil"
+                          className="p-button-rounded p-button-info ml-7 mr-4 mt-1"
+                        />
+                        <Button
+                          icon="pi pi-trash"
+                          className="p-button-rounded p-button-danger left-auto"
+                          onClick={() => deleteTrip(trip._id)}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -576,6 +693,9 @@ const SidePanelTemplate = ({
           </div>
         </div>
         <div className="SidePanel__content">{Content(panelType)}</div>
+        <div className="message">
+          <Messages ref={msg} />
+        </div>
         <div className="SidePanel__footer">
           <button
             className="p-element p-button-secondary p-button-outlined p-button p-component"

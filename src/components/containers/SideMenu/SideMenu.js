@@ -31,7 +31,7 @@ const SideMenu = () => {
 
   const fetchUserRole = async () => {
     try {
-      const token = getToken(); // Retrieve the authentication token from wherever you store it
+      const token = getToken(); 
       const response = await fetch("http://localhost:4000/auth/role", {
         headers: {
           Authorization: `Bearer ${token}`,
