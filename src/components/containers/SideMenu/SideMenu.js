@@ -32,11 +32,9 @@ const SideMenu = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      };
-
+      }
       const response = await fetchData("auth/role", options);
-      const data = await response.json();
-      setUserRole(data.role);
+      setUserRole(response.role);
     } catch (error) {
       console.log(error);
     }
@@ -52,8 +50,8 @@ const SideMenu = () => {
       };
 
       const response = await fetchData("auth/me", options);
-      const data = await response.json();
-      setUsername(data.name);
+
+      setUsername(response.name);
     } catch (error) {
       console.log(error);
     }

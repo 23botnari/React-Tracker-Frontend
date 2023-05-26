@@ -53,7 +53,7 @@ const SidePanelTemplate = ({
   const [refreshTable, setRefreshTable] = useState(false);
   const [displayButtons, setDisplayButtons] = useState(false);
 
-  const { setToken, getToken } = useToken();
+  const { getToken } = useToken();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -95,9 +95,6 @@ const SidePanelTemplate = ({
       };
 
       await fetchData("routes", options)
-        .then((response) => {
-          return response.json();
-        })
         .then((data) => {
           dispatch(setIsOpen(false));
           dispatch(setOriginPoint(""));
@@ -197,9 +194,6 @@ const SidePanelTemplate = ({
       };
 
       await fetchData("drivers", options)
-        .then((response) => {
-          return response.json();
-        })
         .then((data) => {
           dispatch(addDrivers(true));
           dispatch(setIsOpen(false));
@@ -232,9 +226,6 @@ const SidePanelTemplate = ({
       };
 
       await fetchData(`drivers/${driverRowData._id}`, options)
-        .then((response) => {
-          return response.json();
-        })
         .then((data) => {
           dispatch(addDrivers(true));
           dispatch(setIsOpen(false));
@@ -264,14 +255,12 @@ const SidePanelTemplate = ({
       };
 
       await fetchData("companies", options)
-        .then((response) => {
-          return response.json();
-        })
         .then((data) => {
           dispatch(addDrivers(true));
           dispatch(setIsOpen(false));
           setCompanyName("");
           setChecked(false);
+          getCompany()
         })
         .catch((error) => {
           console.error(error);
@@ -293,9 +282,6 @@ const SidePanelTemplate = ({
       };
 
       await fetchData(`companies/${companyRowData._id}`, options)
-        .then((response) => {
-          return response.json();
-        })
         .then((data) => {
           dispatch(addCompany(true));
           dispatch(setIsOpen(false));
@@ -326,12 +312,12 @@ const SidePanelTemplate = ({
       };
 
       const response = await fetchData(url, options);
-      const data = await response.json();
+    
 
       const filteredTrips =
         userRole === "driver"
-          ? data.filter((trip) => trip.driverId === userId)
-          : data;
+          ? response.filter((trip) => trip.driverId === userId)
+          : response;
 
       setTrips(filteredTrips);
     } catch (error) {
@@ -341,6 +327,7 @@ const SidePanelTemplate = ({
 
   const fetchUserRole = async (token) => {
     try {
+      const token = getToken();
       const options = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -348,8 +335,8 @@ const SidePanelTemplate = ({
       };
 
       const response = await fetchData("auth/role", options);
-      const data = await response.json();
-      return data.role;
+
+      return response.role;
     } catch (error) {
       console.log(error);
       return "";
@@ -359,8 +346,8 @@ const SidePanelTemplate = ({
   const getCompany = async (data) => {
     try {
       const response = await fetchData("companies");
-      const data = await response.json();
-      const companies = data.map((company) => company.companyName);
+
+      const companies = response.map((company) => company.companyName);
       setCompanyNames(companies);
     } catch (error) {
       console.error(error);
@@ -373,15 +360,16 @@ const SidePanelTemplate = ({
         method: "DELETE",
       });
 
-      if (response.ok) {
+      if (!response.ok) {
         getTrips();
+        tripDeleted();
       } else {
-        throw new Error("Failed to delete trip.");
+        console.log('');
       }
     } catch (error) {
       console.error(error);
     }
-    tripDeleted();
+   
   };
 
   const buttons = async () => {

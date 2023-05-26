@@ -18,13 +18,13 @@ async function loginUser(credentials) {
       body: JSON.stringify(credentials),
     });
 
-    const data = await response.json();
-    return data;
+    return response;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
