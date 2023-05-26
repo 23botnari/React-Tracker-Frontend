@@ -18,6 +18,7 @@ import { InputText } from "primereact/inputtext";
 import { Messages } from "primereact/messages";
 
 import { FilterMatchMode } from "primereact/api";
+import { fetchData } from "../../helpers/apiServices";
 
 import "./Drivers.scss";
 
@@ -32,21 +33,19 @@ function Drivers() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+useEffect(() => {
+    getDrivers();
+  }, [refreshTable, addDrivers]);
 
   const getDrivers = async () => {
-    fetch("http://localhost:4000/drivers")
-      .then((response) => {
-        return response.json();
-      })
+   await fetchData("drivers")
+     
       .then((data) => {
         dispatch(setDrivers(data));
       });
   };
 
-  useEffect(() => {
-    getDrivers();
-  }, [refreshTable, addDrivers]);
-
+  
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -67,19 +66,19 @@ function Drivers() {
   };
 
   const deleteDriver = async (_id) => {
-    await fetch(`http://localhost:4000/drivers/${_id}`, {
+    const options = {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
+    };
+  
+    await fetchData(`drivers/${_id}`, options)
+    
+      .catch(error => {
         console.error(error);
       });
   };
-
+  
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this Driver?")) {
       deleteDriver(id)
@@ -107,16 +106,16 @@ function Drivers() {
             dispatch(setDriverRowData(rowData));
           }}
         />
-        <Button
+        {/* <Button
           icon="pi pi-envelope"
           className="p-button-rounded p-button-warning mr-2"
           onClick={() => {
             dispatch(setIsOpen(true));
             dispatch(setPanelType("ReadMessages"));
             dispatch(setPanelTitle("Messages - "));
-          }}
-        />
-        <Button
+          }} */}
+        {/* /> */}
+        {/* <Button
           icon="pi pi-send"
           className="p-button-rounded p-button-help mr-2"
           onClick={() => {
@@ -124,7 +123,7 @@ function Drivers() {
             dispatch(setPanelType("SendMessages"));
             dispatch(setPanelTitle("Send Message -"));
           }}
-        />
+        /> */}
         <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-danger mr-2"

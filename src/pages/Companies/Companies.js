@@ -14,7 +14,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Messages } from "primereact/messages";
 import { formatDate } from "../../helpers/utils";
-
+import { fetchData } from "../../helpers/apiServices";
 const Companies = () => {
   const [refreshTable, setRefreshTable] = useState(false);
   const msgs = useRef(null);
@@ -24,12 +24,12 @@ const Companies = () => {
   );
 
   const dispatch = useDispatch();
+ useEffect(() => {
+    getCompanies();
+  }, [refreshTable, addCompany]);
 
   const getCompanies = () => {
-    fetch("http://localhost:4000/companies")
-      .then((response) => {
-        return response.json();
-      })
+    fetchData('companies') 
       .then((data) => {
         data?.map((item) => {
           item.createdAt = formatDate(item.createdAt);
@@ -40,10 +40,7 @@ const Companies = () => {
       });
   };
 
-  useEffect(() => {
-    getCompanies();
-  }, [refreshTable, addCompany]);
-
+ 
   const statusCircle = (rowData) => {
     return (
       <i
@@ -61,20 +58,20 @@ const Companies = () => {
       life: 2400,
     });
   };
-
   const deleteCompany = async (_id) => {
-    await fetch(`http://localhost:4000/companies/${_id}`, {
+    const options = {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
+    };
+  
+    await fetchData(`companies/${_id}`, options)
+      
+      .catch(error => {
         console.error(error);
       });
   };
+  
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this company?")) {
       deleteCompany(id)

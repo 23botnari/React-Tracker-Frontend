@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import "./Login.css";
 import Logo from "./../../../assets/logo192.png";
 import { InputText } from "primereact/inputtext";
@@ -6,15 +6,24 @@ import { Button } from "primereact/button";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Messages } from "primereact/messages";
+import { fetchData } from "../../../helpers/apiServices";
 
 async function loginUser(credentials) {
-  return fetch("http://localhost:4000/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
+  try {
+    const response = await fetchData("auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export default function Login({ setToken }) {
@@ -36,7 +45,7 @@ export default function Login({ setToken }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!email || !password ) {
+    if (!email || !password) {
       errorMessage();
     } else {
       console.log("All is alright.");
@@ -49,8 +58,6 @@ export default function Login({ setToken }) {
     setToken(token);
     navigate("/dashboard");
   }
-
-
 
   return (
     <div

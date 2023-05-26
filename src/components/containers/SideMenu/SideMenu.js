@@ -10,6 +10,7 @@ import {
 } from "../../../redux/actions/sidePanelActions";
 import { setIsExpanded } from "../../../redux/actions/sideMenuActions";
 import useToken from "../Login/useToken";
+import { fetchData } from "../../../helpers/apiServices";
 
 const SideMenu = () => {
   const { isExpanded } = useSelector((state) => state.SideMenuReducer);
@@ -17,12 +18,7 @@ const SideMenu = () => {
 
   const { setToken, getToken } = useToken();
   const [username, setUsername] = useState("");
-
   const [userRole, setUserRole] = useState("");
-
-  const refreshPage = () => {
-    document.location.reload(false);
-  };
 
   useEffect(() => {
     fetchUsername();
@@ -31,12 +27,14 @@ const SideMenu = () => {
 
   const fetchUserRole = async () => {
     try {
-      const token = getToken(); 
-      const response = await fetch("http://localhost:4000/auth/role", {
+      const token = getToken();
+      const options = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      };
+
+      const response = await fetchData("auth/role", options);
       const data = await response.json();
       setUserRole(data.role);
     } catch (error) {
@@ -47,11 +45,13 @@ const SideMenu = () => {
   const fetchUsername = async () => {
     try {
       const token = getToken();
-      const response = await fetch("http://localhost:4000/auth/me", {
+      const options = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      };
+
+      const response = await fetchData("auth/me", options);
       const data = await response.json();
       setUsername(data.name);
     } catch (error) {
@@ -125,7 +125,7 @@ const SideMenu = () => {
           <div className="SideMenu__Title">React Tracker</div>
         </div>
         <div className="SideMenu__Welcome">
-          Welcome, <span style={{fontWeight:"bold"}}>{username}</span>
+          Welcome, <span style={{ fontWeight: "bold" }}>{username}</span>
         </div>
         <ul className="SideMenu__List">{renderMenuItems()}</ul>
 

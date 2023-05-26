@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useSelector } from "react-redux";
 
@@ -19,7 +19,7 @@ const App = () => {
   if (!token) {
     return <Login setToken={setToken} />;
   }
-  
+
   return (
     <div className="basic-layout">
       <div className="basic_layout__sidemenu">

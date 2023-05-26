@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Autocomplete } from "@react-google-maps/api";
 import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { setIsOpen } from "../../../redux/actions/sidePanelActions";
@@ -22,6 +21,7 @@ import {
 } from "../../../redux/actions/dashboardActions";
 
 import { addCompany } from "../../../redux/actions/companiesActions";
+import { fetchData } from "../../../helpers/apiServices";
 
 const SidePanelTemplate = ({
   isActive,
@@ -45,6 +45,7 @@ const SidePanelTemplate = ({
   const [trips, setTrips] = useState([]);
   const originRef = useRef();
   const destinationRef = useRef();
+  const msg = useRef(null);
 
   const { driverRowData } = useSelector((state) => state.DriversReducer);
   const { companyRowData } = useSelector((state) => state.CompaniesReducer);
@@ -59,7 +60,7 @@ const SidePanelTemplate = ({
     getCompany();
     getDriver();
     buttons();
-    getTrips()
+    getTrips();
   }, []);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const SidePanelTemplate = ({
       const userId = driverUser._id;
       console.log(userId);
 
-      await fetch("http://localhost:4000/routes", {
+      const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -91,7 +92,9 @@ const SidePanelTemplate = ({
           companyName: company,
           truckNumber: truckNumber,
         }),
-      })
+      };
+
+      await fetchData("routes", options)
         .then((response) => {
           return response.json();
         })
@@ -118,9 +121,8 @@ const SidePanelTemplate = ({
 
   const fetchUserByName = async (name) => {
     try {
-      const response = await fetch(`http://localhost:4000/users?name=${name}`);
-      const data = await response.json();
-      return data;
+      const response = await fetchData(`users?name=${name}`);
+      return response;
     } catch (error) {
       console.error(error);
       throw error;
@@ -128,41 +130,39 @@ const SidePanelTemplate = ({
   };
 
   const getDriver = async (data) => {
-    await fetch("http://localhost:4000/drivers")
-      .then((response) => response.json())
-      .then((data) => {
-        const drivers = data.map((driver) => {
-          return {
-            label: `${driver.driverName} ${driver.driverSurname}`,
-            value: driver._id, // Assuming the driver ID field is named "_id"
-            driverName: driver.driverName,
-            driverSurname: driver.driverSurname,
-          };
-        });
-        setDrivers(drivers);
-      })
-      .catch((error) => console.error("Error is:", error));
+    try {
+      const drivers = await fetchData("drivers");
+      const formattedDrivers = drivers.map((driver) => ({
+        label: `${driver.driverName} ${driver.driverSurname}`,
+        value: driver._id,
+        driverName: driver.driverName,
+        driverSurname: driver.driverSurname,
+      }));
+      setDrivers(formattedDrivers);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
   const getDriverDetails = async (driverId) => {
-    await fetch(`http://localhost:4000/drivers/${driverId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const driver = data;
-        if (driver) {
-          setDriverName(driver.driverName);
-          setDriverSurname(driver.driverSurname);
-          setDriverNumber(driver.driverNumber);
-          setCompany(driver.company);
-          setTruckNumber(driver.truckNumber);
-        } else {
-          setDriverName("");
-          setDriverSurname("");
-          setDriverNumber("");
-          setCompany("");
-          setTruckNumber("");
-        }
-      })
-      .catch((error) => console.error("Error is:", error));
+    try {
+      const driver = await fetchData(`drivers/${driverId}`);
+      if (driver) {
+        setDriverName(driver.driverName);
+        setDriverSurname(driver.driverSurname);
+        setDriverNumber(driver.driverNumber);
+        setCompany(driver.company);
+        setTruckNumber(driver.truckNumber);
+      } else {
+        setDriverName("");
+        setDriverSurname("");
+        setDriverNumber("");
+        setCompany("");
+        setTruckNumber("");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const onDriverChange = (selectedDriver) => {
@@ -182,115 +182,132 @@ const SidePanelTemplate = ({
     onDriverChange("");
   };
 
-  const createMessage = async (data) => {
-    fetch("https://mockend.com/23botnari/teza/companies", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  };
-
   const createDrivers = async (data) => {
-    await fetch("http://localhost:4000/drivers/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        driverNumber: driverNumber,
-        company: company,
-        driverName: driverName,
-        driverSurname: driverSurname,
-        truckNumber: truckNumber,
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        dispatch(addDrivers(true));
-        dispatch(setIsOpen(false));
-        setDriverNumber("");
-        setCompany("");
-        setDriverName("");
-        setDriverSurname("");
-        setTruckNumber("");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          driverNumber: driverNumber,
+          company: company,
+          driverName: driverName,
+          driverSurname: driverSurname,
+          truckNumber: truckNumber,
+        }),
+      };
+
+      await fetchData("drivers", options)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          dispatch(addDrivers(true));
+          dispatch(setIsOpen(false));
+          setDriverNumber("");
+          setCompany("");
+          setDriverName("");
+          setDriverSurname("");
+          setTruckNumber("");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const editDrivers = async (data) => {
-    await fetch(`http://localhost:4000/drivers/${driverRowData._id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        driverNumber: driverNumber,
-        company: company,
-        driverName: driverName,
-        driverSurname: driverSurname,
-        truckNumber: truckNumber,
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        dispatch(addDrivers(true));
-        dispatch(setIsOpen(false));
-        setDriverNumber("");
-        setCompany("");
-        setDriverName("");
-        setDriverSurname("");
-        setTruckNumber("");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const options = {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          driverNumber: driverNumber,
+          company: company,
+          driverName: driverName,
+          driverSurname: driverSurname,
+          truckNumber: truckNumber,
+        }),
+      };
+
+      await fetchData(`drivers/${driverRowData._id}`, options)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          dispatch(addDrivers(true));
+          dispatch(setIsOpen(false));
+          setDriverNumber("");
+          setCompany("");
+          setDriverName("");
+          setDriverSurname("");
+          setTruckNumber("");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const createCompany = async (data) => {
-    await fetch("http://localhost:4000/companies", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        companyName: companyName,
-        isActive: checked,
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        dispatch(addDrivers(true));
-        dispatch(setIsOpen(false));
-        setCompanyName("");
-        setChecked(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: companyName,
+          isActive: checked,
+        }),
+      };
+
+      await fetchData("companies", options)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          dispatch(addDrivers(true));
+          dispatch(setIsOpen(false));
+          setCompanyName("");
+          setChecked(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const editCompany = async (data) => {
-    await fetch(`http://localhost:4000/companies/${companyRowData._id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        companyName: companyName,
-        isActive: checked,
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        dispatch(addCompany(true));
-        dispatch(setIsOpen(false));
-        setCompanyName("");
-        setChecked(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const options = {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: companyName,
+          isActive: checked,
+        }),
+      };
+
+      await fetchData(`companies/${companyRowData._id}`, options)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          dispatch(addCompany(true));
+          dispatch(setIsOpen(false));
+          setCompanyName("");
+          setChecked(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getTrips = async () => {
@@ -300,16 +317,15 @@ const SidePanelTemplate = ({
     const userRole = await fetchUserRole(token);
 
     try {
-      const url =
-        userRole === "driver"
-          ? `http://localhost:4000/routes/${userId}`
-          : "http://localhost:4000/routes";
+      const url = userRole === "driver" ? `routes/${userId}` : "routes";
 
-      const response = await fetch(url, {
+      const options = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      };
+
+      const response = await fetchData(url, options);
       const data = await response.json();
 
       const filteredTrips =
@@ -325,11 +341,13 @@ const SidePanelTemplate = ({
 
   const fetchUserRole = async (token) => {
     try {
-      const response = await fetch("http://localhost:4000/auth/role", {
+      const options = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      };
+
+      const response = await fetchData("auth/role", options);
       const data = await response.json();
       return data.role;
     } catch (error) {
@@ -339,13 +357,31 @@ const SidePanelTemplate = ({
   };
 
   const getCompany = async (data) => {
-    await fetch("http://localhost:4000/companies")
-      .then((response) => response.json())
-      .then((data) => {
-        const companies = data.map((company) => company.companyName);
-        setCompanyNames(companies);
-      })
-      .catch((error) => console.error(error));
+    try {
+      const response = await fetchData("companies");
+      const data = await response.json();
+      const companies = data.map((company) => company.companyName);
+      setCompanyNames(companies);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteTrip = async (tripId) => {
+    try {
+      const response = await fetchData(`routes/${tripId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        getTrips();
+      } else {
+        throw new Error("Failed to delete trip.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    tripDeleted();
   };
 
   const buttons = async () => {
@@ -361,24 +397,6 @@ const SidePanelTemplate = ({
       console.error(error);
     }
   };
-
-  const deleteTrip = async (tripId) => {
-    try {
-      const response = await fetch(`http://localhost:4000/routes/${tripId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        getTrips();
-      } else {
-        throw new Error("Failed to delete trip.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    tripDeleted();
-  };
-  const msg = useRef(null);
 
   const tripDeleted = () => {
     if (msg.current) {
@@ -589,43 +607,6 @@ const SidePanelTemplate = ({
           </>
         );
 
-      case "ReadMessages":
-        panelSubmit = !setIsOpen();
-        return (
-          <>
-            <div className="Message">
-              <div className="Message-details">
-                <span style={{ color: "gray" }}>From:</span>
-              </div>
-              <div className="Message-text">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s.
-              </div>
-            </div>
-          </>
-        );
-
-      case "SendMessages":
-        panelSubmit = createMessage();
-        return (
-          <>
-            <InputText
-              id="numbermess"
-              type="text"
-              placeholder="Number"
-              className="w-full mb-3"
-            />
-            <InputTextarea
-              autoResize
-              id="message"
-              type="text"
-              placeholder="Message"
-              className="w-full mb-3"
-            />
-          </>
-        );
-
       case "addCompanies":
         panelSubmit = createCompany;
 
@@ -689,7 +670,6 @@ const SidePanelTemplate = ({
         <div className="SidePanel__header">
           <div className="SidePanel__title">
             <h3>{panelTitle}</h3>
-            {/* {panelType === "Drivers" ? "New Number" : "New Company"} */}
           </div>
         </div>
         <div className="SidePanel__content">{Content(panelType)}</div>
