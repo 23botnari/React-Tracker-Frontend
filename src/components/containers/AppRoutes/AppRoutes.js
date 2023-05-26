@@ -1,6 +1,5 @@
 import React from "react";
 import {  Route, Routes } from "react-router-dom";
-import Login from "../../containers/Login/Login";
 import Dashboard from "../../../pages/Dashboard/Dashboard";
 import Companies from "../../../pages/Companies/Companies";
 import Drivers from "../../../pages/Driver/Drivers";
