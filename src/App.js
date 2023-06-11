@@ -29,7 +29,7 @@ const App = () => {
         className="basic_layout__content"
         style={{
           width: "100%",
-          paddingLeft: !!isExpanded ? `${250}px` : `${90}px`,
+          paddingLeft: !!isExpanded ? `${250}px` : `${0}px`,
           paddingRight: !!isOpen ? `${350}px` : `${0}px`,
         }}
       >

@@ -79,7 +79,7 @@ const SidePanelTemplate = ({
       const userId = driverUser._id;
       console.log(userId);
 
-      const options = {
+      await fetch("http://localhost:4000/routes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -92,16 +92,18 @@ const SidePanelTemplate = ({
           companyName: company,
           truckNumber: truckNumber,
         }),
-      };
-
-      await fetchData("routes", options)
+      })
+        .then((response) => {
+          return response.json();
+        })
         .then((data) => {
-          dispatch(setIsOpen(false));
           dispatch(setOriginPoint(""));
           dispatch(setDestinationPoint(""));
           onDriverChange("");
           dispatch(setOriginPoint(""));
           dispatch(setDestinationPoint(""));
+          setOriginPoint("0");
+          setDestinationPoint("");
           getTrips();
           window.alert("New Route was Added.");
         })
@@ -260,7 +262,7 @@ const SidePanelTemplate = ({
           dispatch(setIsOpen(false));
           setCompanyName("");
           setChecked(false);
-          getCompany()
+          getCompany();
         })
         .catch((error) => {
           console.error(error);
@@ -312,7 +314,6 @@ const SidePanelTemplate = ({
       };
 
       const response = await fetchData(url, options);
-    
 
       const filteredTrips =
         userRole === "driver"
@@ -363,13 +364,14 @@ const SidePanelTemplate = ({
       if (!response.ok) {
         getTrips();
         tripDeleted();
+        dispatch(setOriginPoint(""));
+        dispatch(setDestinationPoint(""));
       } else {
-        console.log('');
+        console.log("");
       }
     } catch (error) {
       console.error(error);
     }
-   
   };
 
   const buttons = async () => {

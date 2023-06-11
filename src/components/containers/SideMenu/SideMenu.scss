@@ -95,3 +95,33 @@
     flex: 70%;
   }
 }
+@media (max-width: 767px) {
+  .SideMenu {
+    width: 0;
+    &__button{
+      margin-right: -16px;
+    }
+  }
+  .SideMenu.expanded .SideMenu {
+    &__button{
+     margin-right: 0px;
+    }
+  }
+  .SideMenu.expanded {
+    width: 250px;
+  }
+
+  .SideMenu__Brand,
+  .SideMenu__Title,
+  .SideMenu__Welcome,
+  .SideMenu__List {
+    display: none;
+  }
+
+  .SideMenu.expanded .SideMenu__Brand,
+  .SideMenu.expanded .SideMenu__Title,
+  .SideMenu.expanded .SideMenu__Welcome,
+  .SideMenu.expanded .SideMenu__List {
+    display: block;
+  }
+}

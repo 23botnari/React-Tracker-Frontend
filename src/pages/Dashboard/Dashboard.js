@@ -24,7 +24,8 @@ function Dashboard() {
   );
 
   async function calculateRoute(originPoint, destinationPoint) {
-    if (originPoint === "" || destinationPoint === "") {
+  try{
+  if (originPoint === "" || destinationPoint === "") {
       return setDirectionsResponse(null);
     }
     // eslint-disable-next-line no-undef
@@ -35,7 +36,12 @@ function Dashboard() {
       // eslint-disable-next-line no-undef
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    setDirectionsResponse(results);
+    
+      setDirectionsResponse(results);
+    }
+    catch{
+                window.alert("Trip was not found");
+    }
   }
 
   useEffect(() => {

@@ -50,3 +50,11 @@ body {
     width: 500px;
   }
 }
+@media (max-width: 767px) {
+  .basic-layout__content{
+  &__sidebar{
+    width: 0;
+    position: absolute;
+  }
+  }
+}
